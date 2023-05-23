@@ -1,5 +1,3 @@
-enable_testing()
-
 include(FetchContent)
 FetchContent_Declare(
   googletest
@@ -20,8 +18,9 @@ target_link_libraries(
   main
   GTest::gtest_main
 )
+
+message(${PROJECT_SOURCE_DIR})
 target_include_directories(main PUBLIC
-        "${PROJECT_BINARY_DIR}"
         "${PROJECT_SOURCE_DIR}"
         )
 
