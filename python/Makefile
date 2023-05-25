@@ -36,8 +36,8 @@ lint:             ## Run pep8, black, mypy linters.
 	$(ENV_PREFIX)mypy --ignore-missing-imports sandbox/
 
 .PHONY: test
-test: lint        ## Run tests and generate coverage report.
-	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 sandbox/
+test: lint        ## Run tests and generate coverage report.  --cov-config .coveragerc --cov=project_name -l
+	$(ENV_PREFIX)pytest -v --tb=short --maxfail=1 sandbox/
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
 
