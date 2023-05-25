@@ -5,7 +5,6 @@
 #include <optional>
 #include <queue>
 #include <semaphore>
-#include <shared_mutex>
 
 namespace kcu {
 
@@ -34,7 +33,7 @@ class threadsafe_queue final {
     }
 
    private:
-    mutable std::shared_mutex mtx_;
+    mutable std::mutex mtx_;
     mutable std::binary_semaphore bs_{0};
     std::queue<T> queue_;
 };
