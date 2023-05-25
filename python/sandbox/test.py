@@ -1,2 +1,6 @@
-if "__name__" == "__main__":
-    print('Hello World!')
+import math
+
+def test_sqrt():
+   num = 25
+   assert math.sqrt(num) == 5
+   
