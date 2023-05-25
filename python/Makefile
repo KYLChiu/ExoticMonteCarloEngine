@@ -37,7 +37,7 @@ lint:             ## Run pep8, black, mypy linters.
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.  --cov-config .coveragerc --cov=project_name -l coverage html
-	$(ENV_PREFIX)pytest -v --tb=short --maxfail=1 sandbox/
+	$(ENV_PREFIX)pytest sandbox/*
 
 .PHONY: watch
 watch:            ## Run tests on every change.
