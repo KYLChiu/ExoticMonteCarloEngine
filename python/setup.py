@@ -29,8 +29,8 @@ def read_requirements(path):
 
 
 setup(
-    name="project_name",
-    version=read("project_name", "VERSION"),
+    name="big-python-learning",
+    version="0.1.0",
     description="project_description",
     url="https://github.com/author_name/project_urlname/",
     long_description=read("README.md"),
@@ -41,5 +41,4 @@ setup(
     entry_points={
         "console_scripts": ["project_name = project_name.__main__:main"]
     },
-    extras_require={"test": read_requirements("requirements-test.txt")},
 )
