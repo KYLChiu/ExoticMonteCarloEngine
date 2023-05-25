@@ -26,26 +26,24 @@ install:          ## Install the project in dev mode.
 
 .PHONY: fmt
 fmt:              ## Format code using black & isort.
-	$(ENV_PREFIX)isort project_name/
-	$(ENV_PREFIX)black -l 79 project_name/
-	$(ENV_PREFIX)black -l 79 tests/
+	$(ENV_PREFIX)isort sandbox/
+	$(ENV_PREFIX)black -l 79 sandbox/
 
 .PHONY: lint
 lint:             ## Run pep8, black, mypy linters.
-	$(ENV_PREFIX)flake8 project_name/
-	$(ENV_PREFIX)black -l 79 --check project_name/
-	$(ENV_PREFIX)black -l 79 --check tests/
-	$(ENV_PREFIX)mypy --ignore-missing-imports project_name/
+	$(ENV_PREFIX)flake8 sandbox/
+	$(ENV_PREFIX)black -l 79 --check sandbox/
+	$(ENV_PREFIX)mypy --ignore-missing-imports sandbox/
 
 .PHONY: test
 test: lint        ## Run tests and generate coverage report.
-	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 tests/
+	$(ENV_PREFIX)pytest -v --cov-config .coveragerc --cov=project_name -l --tb=short --maxfail=1 sandbox/
 	$(ENV_PREFIX)coverage xml
 	$(ENV_PREFIX)coverage html
 
 .PHONY: watch
 watch:            ## Run tests on every change.
-	ls **/**.py | entr $(ENV_PREFIX)pytest -s -vvv -l --tb=long --maxfail=1 tests/
+	ls **/**.py | entr $(ENV_PREFIX)pytest -s -vvv -l --tb=long --maxfail=1 sandbox/
 
 .PHONY: clean
 clean:            ## Clean unused files.
