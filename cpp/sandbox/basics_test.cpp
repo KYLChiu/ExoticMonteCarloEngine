@@ -8,11 +8,11 @@ template <typename T>
 class wrapper final {
    public:
     explicit wrapper(T x) : x_(x) { oss_ << "Constructor\n"; }
-    wrapper(wrapper &&iw) : x_(std::move(iw.x_)) {
+    wrapper(wrapper&& iw) : x_(std::move(iw.x_)) {
         oss_ << "Move constructor\n";
     }
-    wrapper(const wrapper &iw) : x_(iw.x_) { oss_ << "Copy constructor\n"; }
-    wrapper &operator=(wrapper iw) {
+    wrapper(const wrapper& iw) : x_(iw.x_) { oss_ << "Copy constructor\n"; }
+    wrapper& operator=(wrapper iw) {
         std::swap(x_, iw.x_);
         oss_ << "Assignment\n";
         return *this;
@@ -20,7 +20,7 @@ class wrapper final {
     ~wrapper() = default;
 
     int x() const { return x_; }
-    const auto &buffer() const { return oss_; }
+    const auto& buffer() const { return oss_; }
 
    private:
     int x_;
@@ -30,8 +30,8 @@ class wrapper final {
 class implicit_string final {
    public:
     implicit_string(int) { oss_ << "Implicit int constructor\n"; }
-    implicit_string(const char *) { oss_ << "Implicit char* constructor\n"; }
-    const auto &buffer() const { return oss_; }
+    implicit_string(const char*) { oss_ << "Implicit char* constructor\n"; }
+    const auto& buffer() const { return oss_; }
 
    private:
     std::ostringstream oss_;
@@ -40,8 +40,8 @@ class implicit_string final {
 class explicit_string final {
    public:
     explicit explicit_string(int) { oss_ << "Explicit int constructor\n"; }
-    explicit_string(const char *) { oss_ << "Explicit char* constructor\n"; }
-    const auto &buffer() const { return oss_; }
+    explicit_string(const char*) { oss_ << "Explicit char* constructor\n"; }
+    const auto& buffer() const { return oss_; }
 
    private:
     std::ostringstream oss_;
@@ -60,7 +60,7 @@ TEST(Basics, Explicit) {
 TEST(Basics, LValueReference) {
     {
         int a;
-        int &b = a;
+        int& b = a;
 
         a = 2;
         EXPECT_EQ(b, 2);
@@ -69,14 +69,14 @@ TEST(Basics, LValueReference) {
         EXPECT_EQ(a, 3);
 
         // int& c = 1; l-value reference must be initiaised with lvalues.
-        const int &c = 1;
+        const int& c = 1;
     }
 
     {
-        const auto &cr = [](const int &x) { EXPECT_EQ(x, 1); };
-        const auto &r = [](int &x) { EXPECT_EQ(x, 1); };
+        const auto& cr = [](const int& x) { EXPECT_EQ(x, 1); };
+        const auto& r = [](int& x) { EXPECT_EQ(x, 1); };
 
-        int *p = new int(1);
+        int* p = new int(1);
 
         cr(1);
         cr(*p);
@@ -92,7 +92,7 @@ TEST(Basics, LValueReference) {
 
 TEST(Basics, RValueReference) {
     {
-        int &&a = 1;
+        int&& a = 1;
         EXPECT_EQ(a, 1);
 
         a = 2;
@@ -101,12 +101,12 @@ TEST(Basics, RValueReference) {
 
     {
         const auto g = []() { return 42; };
-        const auto f = [](int &&a) { return a; };
+        const auto f = [](int&& a) { return a; };
 
         EXPECT_EQ(f(g()), 42);
         EXPECT_EQ(f(42), 42);
 
-        int &&a = g();
+        int&& a = g();
         EXPECT_EQ(f(std::move(a)), 42);
     }
 }

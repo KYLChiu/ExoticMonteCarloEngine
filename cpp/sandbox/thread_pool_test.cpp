@@ -28,12 +28,12 @@ TEST(ThreadPool, ScheduleWithRefReturn) {
 
     std::atomic<int> i = 0;
     std::atomic<int> j = 0;
-    auto f = [&i, &j]() -> std::atomic<int> & {
+    auto f = [&i, &j]() -> std::atomic<int>& {
         ++i;
         return j;
     };
 
-    std::vector<std::future<std::atomic<int> &>> futures;
+    std::vector<std::future<std::atomic<int>&>> futures;
     futures.reserve(2 * tp_size);
     for (std::size_t _ : std::ranges::iota_view{0UL, 2 * tp_size}) {
         futures.emplace_back(tp.schedule(f));

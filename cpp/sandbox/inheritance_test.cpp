@@ -60,7 +60,7 @@ TEST(Basics, InheritanceCasting) {
     }
 
     {
-        const auto &f = [](std::shared_ptr<base> p) { EXPECT_TRUE(p); };
+        const auto& f = [](std::shared_ptr<base> p) { EXPECT_TRUE(p); };
         std::shared_ptr<base> b = std::make_shared<base>();
         const auto d = std::make_shared<derived>();
         f(b);
@@ -68,7 +68,7 @@ TEST(Basics, InheritanceCasting) {
     }
 
     {
-        const auto &f = [](base *p) { EXPECT_TRUE(p); };
+        const auto& f = [](base* p) { EXPECT_TRUE(p); };
         const auto b = new base;
         const auto d = new derived;
         f(b);
@@ -78,7 +78,7 @@ TEST(Basics, InheritanceCasting) {
     }
 
     {
-        const auto &f = [](const intermediate1 &b) {};
+        const auto& f = [](const intermediate1& b) {};
         const auto i1 = intermediate1{};
         const auto d = derived{};
         // f(b);

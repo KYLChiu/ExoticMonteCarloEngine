@@ -22,19 +22,19 @@ class thread_pool final {
             threads_[i] = std::thread(&thread_pool::worker_thread, this);
         }
     }
-    thread_pool(const thread_pool &) = delete;
-    thread_pool &operator=(const thread_pool &) = delete;
+    thread_pool(const thread_pool&) = delete;
+    thread_pool& operator=(const thread_pool&) = delete;
     ~thread_pool() {
         active_ = false;
         cs_.release(N);
-        for (auto &t : threads_) {
+        for (auto& t : threads_) {
             t.join();
         }
     }
 
     template <typename F, typename... Args>
     requires std::invocable<F, Args...>
-    auto schedule(F &&f, Args &&...args) {
+    auto schedule(F&& f, Args&&... args) {
         using R = std::invoke_result_t<F, Args...>;
         auto bound_f =
             std::bind(std::forward<F>(f), std::forward<Args>(args)...);

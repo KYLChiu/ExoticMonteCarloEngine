@@ -8,7 +8,7 @@ struct X {
     X(int x) : x_(x) {}
     int x() const { return x_; }
 
-    bool operator==(const X &x) { return x_ == x.x_; }
+    bool operator==(const X& x) { return x_ == x.x_; }
 
    private:
     int x_;
@@ -45,13 +45,13 @@ TEST(SmartPointer, UniquePtr) {
     {
         std::ostringstream oss;
 
-        const auto &del = [&oss](auto *ptr) {
+        const auto& del = [&oss](auto* ptr) {
             oss << "Custom deleter...";
             delete ptr;
         };
 
         {
-            int *p = new int(1);
+            int* p = new int(1);
             kcu::unique_ptr<int, decltype(del)>(p, del);
         }
 
