@@ -22,11 +22,8 @@ class thread_pool final {
             threads_[i] = std::thread(&thread_pool::worker_thread, this);
         }
     }
-
-    // Remove copy/move constructors.
     thread_pool(const thread_pool &) = delete;
     thread_pool &operator=(const thread_pool &) = delete;
-
     ~thread_pool() {
         active_ = false;
         cs_.release(N);
