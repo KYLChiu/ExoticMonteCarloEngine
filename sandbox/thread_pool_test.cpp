@@ -1,4 +1,4 @@
-#include "kc_utils/thread_pool/thread_pool.hpp"
+#include "kc_utils/concurrency/thread_pool.hpp"
 #include <gtest/gtest.h>
 #include <functional>
 #include <future>

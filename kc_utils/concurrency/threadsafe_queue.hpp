@@ -1,0 +1,42 @@
+#pragma once
+
+#include <memory>
+#include <mutex>
+#include <optional>
+#include <queue>
+#include <semaphore>
+#include <shared_mutex>
+
+namespace kcu {
+
+template <typename T>
+class threadsafe_queue final {
+   public:
+    threadsafe_queue() = default;
+
+    void push(T&& t) {
+        {
+            std::lock_guard lock(mtx_);
+            queue_.push(t);
+        }
+        bs_.release();
+    }
+
+    const T& front() const {
+        std::lock_guard lock(mtx_);
+        bs_.acquire();
+        return queue_.front();
+    }
+
+    void pop() {
+        std::lock_guard lock(mtx_);
+        queue_.pop();
+    }
+
+   private:
+    mutable std::shared_mutex mtx_;
+    mutable std::binary_semaphore bs_{0};
+    std::queue<T> queue_;
+};
+
+}  // namespace kcu

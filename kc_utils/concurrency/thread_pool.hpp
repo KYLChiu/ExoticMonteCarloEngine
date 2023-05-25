@@ -7,10 +7,10 @@
 #include <future>
 #include <iostream>
 #include <mutex>
-#include <queue>
 #include <ranges>
 #include <semaphore>
 #include <thread>
+#include "threadsafe_queue.hpp"
 
 namespace kcu {
 
@@ -55,18 +55,15 @@ class thread_pool final {
         while (active_) {
             cs_.acquire();
             if (active_) {
-                {
-                    std::unique_lock ul(mtx_);
-                    task = std::move(task_queue_.front());
-                    task_queue_.pop();
-                }
+                task = std::move(task_queue_.front());
+                task_queue_.pop();
                 task();
             }
         }
     }
 
     std::atomic<bool> active_;
-    std::queue<std::function<void()>> task_queue_;
+    threadsafe_queue<std::function<void()>> task_queue_;
     std::array<std::thread, N> threads_;
     std::counting_semaphore<N> cs_{0};
     std::mutex mtx_;

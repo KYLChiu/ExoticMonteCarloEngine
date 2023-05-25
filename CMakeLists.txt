@@ -4,4 +4,4 @@ project(kc_utils VERSION 0.1.0)
 set(CMAKE_CXX_STANDARD 20)
 
 enable_testing()
-add_subdirectory(unit_tests)
+add_subdirectory(sandbox)
