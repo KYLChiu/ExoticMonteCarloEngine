@@ -12,6 +12,11 @@ on:
   workflow_dispatch:
 
 jobs:
+
+  defaults:
+      run:
+        working-directory: ./python
+
   linter:
     strategy:
       fail-fast: false
