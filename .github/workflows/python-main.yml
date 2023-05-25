@@ -12,12 +12,10 @@ on:
   workflow_dispatch:
 
 jobs:
-
-  defaults:
+  linter:
+    defaults:
       run:
         working-directory: ./python
-
-  linter:
     strategy:
       fail-fast: false
       matrix:
@@ -36,6 +34,9 @@ jobs:
 
   tests_linux:
     needs: linter
+    defaults:
+      run:
+        working-directory: ./python
     strategy:
       fail-fast: false
       matrix:
@@ -58,6 +59,9 @@ jobs:
 
   tests_mac:
     needs: linter
+    defaults:
+      run:
+        working-directory: ./python
     strategy:
       fail-fast: false
       matrix:
@@ -76,6 +80,9 @@ jobs:
 
   tests_win:
     needs: linter
+    defaults:
+      run:
+        working-directory: ./python
     strategy:
       fail-fast: false
       matrix:
