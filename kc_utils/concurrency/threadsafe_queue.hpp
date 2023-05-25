@@ -1,8 +1,6 @@
 #pragma once
 
-#include <memory>
 #include <mutex>
-#include <optional>
 #include <queue>
 #include <semaphore>
 
@@ -16,7 +14,7 @@ class threadsafe_queue final {
     void push(T&& t) {
         {
             std::lock_guard lock(mtx_);
-            queue_.push(t);
+            queue_.push(std::forward<T>(t));
         }
         bs_.release();
     }
