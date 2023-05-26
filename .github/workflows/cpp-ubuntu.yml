@@ -15,9 +15,6 @@ env:
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
 
-  # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
-
 jobs:
   build-debug:
     runs-on: ubuntu-latest
@@ -42,25 +39,25 @@ jobs:
       - name: collect code coverage
         run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
 
-    build-debug:
-      runs-on: ubuntu-latest
-  
-      steps:
-        - uses: actions/checkout@v3
-  
-        - uses: actions/cache@v3
-          with:
-            path: "**/cpm_modules"
-            key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
-  
-        - name: configure
-          run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release
-  
-        - name: build
-          run: cmake --build build --config Release --target all --
-  
-        - name: test
-          run: cd build && ctest
-  
-        - name: collect code coverage
-          run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+  build-release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions/cache@v3
+        with:
+          path: "**/cpm_modules"
+          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+
+      - name: configure
+        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release
+
+      - name: build
+        run: cmake --build build --config Release --target all --
+
+      - name: test
+        run: cd build && ctest
+
+      - name: collect code coverage
+        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
