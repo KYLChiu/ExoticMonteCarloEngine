@@ -44,12 +44,12 @@ class alignment_tester {
                            std::memory_order_relaxed);
         };
 
-        threads_.reserve(NumThreads);
+        std::vector<std::thread> threads;
+        threads.reserve(NumThreads);
         for (std::size_t i : std::ranges::iota_view{0UL, NumThreads}) {
-            threads_.emplace_back(do_work, i);
+            threads.emplace_back(do_work, i);
         }
-
-        for (auto& t : threads_) {
+        for (auto& t : threads) {
             t.join();
         }
     }
@@ -60,8 +60,6 @@ class alignment_tester {
     std::size_t num_items_ = 1 << 26;
     std::array<AlignmentType, NumThreads> partial_sums_;
     std::atomic<std::size_t> sum_;
-    std::vector<std::size_t> bins_;
-    std::vector<std::thread> threads_;
 };
 
 TEST(FalseSharing, AlignDefault) {
