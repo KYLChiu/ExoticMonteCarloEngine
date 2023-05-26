@@ -1,2 +1,5 @@
+ignore:
+  - "sandbox"
+  
 comment:
   require_changes: true
