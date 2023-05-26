@@ -35,7 +35,8 @@ TEST(ThreadPool, ScheduleWithRefReturn) {
 
     std::vector<std::future<std::atomic<int>&>> futures;
     futures.reserve(2 * tp_size);
-    for (std::size_t _ : std::ranges::iota_view{0UL, 2 * tp_size}) {
+    for ([[maybe_unused]] std::size_t _ :
+         std::ranges::iota_view{0UL, 2 * tp_size}) {
         futures.emplace_back(tp.schedule(f));
     }
 
@@ -55,11 +56,13 @@ TEST(ThreadPool, ScheduleWithVoid) {
 
     std::vector<std::future<void>> futures;
     futures.reserve(2 * tp_size);
-    for (std::size_t _ : std::ranges::iota_view{0UL, 2 * tp_size}) {
+    for ([[maybe_unused]] std::size_t _ :
+         std::ranges::iota_view{0UL, 2 * tp_size}) {
         futures.emplace_back(tp.schedule(f));
     }
 
-    for (std::size_t i : std::ranges::iota_view{0UL, 2 * tp_size}) {
+    for ([[maybe_unused]] std::size_t i :
+         std::ranges::iota_view{0UL, 2 * tp_size}) {
         futures[i].get();
     }
 

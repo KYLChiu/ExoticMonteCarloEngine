@@ -1,3 +1,5 @@
+// Do not compile with -03 to get full false sharing results.
+
 #include <gtest/gtest.h>
 #include <array>
 #include <functional>
@@ -33,8 +35,9 @@ class alignment_tester {
     void launch() {
         const auto& do_work = [this](std::size_t thread_id) {
             std::size_t items_per_thread = num_items_ / NumThreads;
-            for (const std::size_t i :
+            for ([[maybe_unused]] const std::size_t i :
                  std::ranges::iota_view{0UL, items_per_thread}) {
+                // Some work...
                 partial_sums_[thread_id].counter_++;
             }
             sum_.fetch_add(partial_sums_[thread_id].counter_,
@@ -54,20 +57,20 @@ class alignment_tester {
 
    private:
     std::array<AlignmentType, NumThreads> partial_sums_;
-    std::size_t num_items_ = 1 << 26;
+    std::size_t num_items_ = 1 << 30;
     std::atomic<std::size_t> sum_;
 };
 
 TEST(FalseSharing, AlignDefault) {
     alignment_tester<16, align_default> at;
     at.launch();
-    EXPECT_EQ(at.sum().load(), 67108864);
+    EXPECT_EQ(at.sum().load(), 1073741824);
 }
 
 TEST(FalseSharing, AlignedCache) {
     alignment_tester<16, align_cache> at;
     at.launch();
-    EXPECT_EQ(at.sum().load(), 67108864);
+    EXPECT_EQ(at.sum().load(), 1073741824);
 }
 
 }  // namespace

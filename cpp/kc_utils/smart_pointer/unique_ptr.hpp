@@ -42,17 +42,24 @@ class unique_ptr final {
         }
     }
 
-    T* get() { return ptr_; }
-
+    T* get() const { return ptr_; }
     T* operator->() const { return ptr_; }
     T& operator*() const { return *ptr_; }
     explicit operator bool() const { return ptr_; }
-    bool operator==(const unique_ptr& u) const { return *ptr_ == *(u.ptr_); }
+
+    template <typename T1, typename D1, typename T2, typename D2>
+    friend bool operator==(const unique_ptr<T1, D1>& u1,
+                           const unique_ptr<T2, D2>& u2);
 
    private:
     T* ptr_;
     Deleter del_;
 };
+
+template <typename T1, typename D1, typename T2, typename D2>
+bool operator==(const unique_ptr<T1, D1>& u1, const unique_ptr<T2, D2>& u2) {
+    return u1.get() == u2.get();
+}
 
 template <typename T, typename... Args>
 unique_ptr<T> make_unique(Args&&... args) {

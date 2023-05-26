@@ -78,7 +78,7 @@ TEST(Basics, InheritanceCasting) {
     }
 
     {
-        const auto& f = [](const intermediate1& b) {};
+        const auto& f = [](const intermediate1&) {};
         const auto i1 = intermediate1{};
         const auto d = derived{};
         // f(b);

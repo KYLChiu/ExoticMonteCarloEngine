@@ -69,7 +69,7 @@ TEST(Basics, LValueReference) {
         EXPECT_EQ(a, 3);
 
         // int& c = 1; l-value reference must be initiaised with lvalues.
-        const int& c = 1;
+        [[maybe_unused]] const int& c = 1;
     }
 
     {
@@ -116,7 +116,8 @@ TEST(Basics, Constructors) {
         wrapper iw(1);
         EXPECT_EQ(iw.buffer().str(), "Constructor\n");
 
-        iw = std::move(iw);
+        auto tmp = iw;
+        iw = std::move(tmp);
         EXPECT_EQ(iw.buffer().str(), "Constructor\nAssignment\n");
 
         iw = iw;
@@ -134,7 +135,8 @@ TEST(Basics, Constructors) {
         wrapper iw5 = std::move(iw);
         EXPECT_EQ(iw5.buffer().str(), "Move constructor\n");
 
-        wrapper iw6(std::move(wrapper<int>{1}));
+        tmp = wrapper<int>{1};
+        wrapper iw6(std::move(tmp));
         EXPECT_EQ(iw6.buffer().str(), "Move constructor\n");
 
         wrapper iw7(std::move(1));

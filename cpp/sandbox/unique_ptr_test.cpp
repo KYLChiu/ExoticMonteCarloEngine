@@ -62,7 +62,8 @@ TEST(SmartPointer, UniquePtr) {
     {
         auto u1 = kcu::make_unique<X>(1);
         auto u2 = kcu::make_unique<X>(1);
-        EXPECT_TRUE(u1 == u2);
+        EXPECT_TRUE(u1 == u1);
+        EXPECT_TRUE(u1 != u2);
         EXPECT_EQ(u1->x(), 1);
         EXPECT_EQ((*u1).x(), 1);
     }
