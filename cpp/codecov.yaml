@@ -1,5 +1,6 @@
 ignore:
-  - "cpp/sandbox"
+  - "sandbox/*"
+  - "cpp/sandbox/*"
   
 comment:
   require_changes: true
