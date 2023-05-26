@@ -1,4 +1,5 @@
 include(FetchContent)
+
 FetchContent_Declare(
   googletest
   URL https://github.com/google/googletest/archive/03597a01ee50ed33e9dfd640b249b4be3799d395.zip
@@ -13,6 +14,7 @@ add_executable(
   basics_test.cpp
   inheritance_test.cpp
   thread_pool_test.cpp
+  parallel_test.cpp
 )
 target_link_libraries(
   main
@@ -26,3 +28,5 @@ target_include_directories(main PUBLIC
 
 include(GoogleTest)
 gtest_discover_tests(main)
+
+

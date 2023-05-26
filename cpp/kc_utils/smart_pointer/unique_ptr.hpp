@@ -46,11 +46,8 @@ class unique_ptr final {
 
     T* operator->() const { return ptr_; }
     T& operator*() const { return *ptr_; }
-    explicit operator bool() { return ptr_; }
-
-    bool operator==(const unique_ptr& u) const {
-        return *this->ptr_ == *u.ptr_;
-    }
+    explicit operator bool() const { return ptr_; }
+    bool operator==(const unique_ptr& u) const { return *ptr_ == *(u.ptr_); }
 
    private:
     T* ptr_;

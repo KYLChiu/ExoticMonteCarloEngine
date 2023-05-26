@@ -8,7 +8,9 @@ IndentWidth: '4'
 IndentWrappedFunctionNames: 'true'
 Language: Cpp
 NamespaceIndentation: Inner
+DerivePointerAlignment: false
 PointerAlignment: Left
+ReferenceAlignment: Left
 SortIncludes: 'true'
 SortUsingDeclarations: 'true'
 SpaceAfterLogicalNot: 'true'
