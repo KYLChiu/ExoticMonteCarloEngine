@@ -41,10 +41,9 @@ class alignment_tester {
                            std::memory_order_relaxed);
         };
 
-        std::vector<std::thread> threads;
-        threads.reserve(NumThreads);
+        std::array<std::thread, NumThreads> threads;
         for (std::size_t i : std::ranges::iota_view{0UL, NumThreads}) {
-            threads.emplace_back(do_work, i);
+            threads[i] = std::thread(do_work, i);
         }
         for (auto& t : threads) {
             t.join();
