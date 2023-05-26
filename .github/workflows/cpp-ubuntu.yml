@@ -21,14 +21,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - uses: actions/cache@v3
-        with:
-          path: "**/cpm_modules"
-          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
-
-      - name: Upload coverage reports to Codecov
-        uses: codecov/codecov-action@v3
-
       - name: configure
         run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Debug
 
@@ -38,19 +30,15 @@ jobs:
       - name: test
         run: cd build && ctest
 
-      - name: collect code coverage
-        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+      - uses: codecov/codecov-action@v3
+        with: 
+          working-directory: ./cpp
 
   build-release:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v3
-
-      - uses: actions/cache@v3
-        with:
-          path: "**/cpm_modules"
-          key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
 
       - name: configure
         run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release
@@ -61,5 +49,6 @@ jobs:
       - name: test
         run: cd build && ctest
 
-      - name: collect code coverage
-        run: bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
+      - uses: codecov/codecov-action@v3
+        with: 
+          working-directory: ./cpp

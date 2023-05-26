@@ -1,0 +1,5 @@
+ignore:
+  - "kc_utils"
+
+comment:
+  require_changes: true
