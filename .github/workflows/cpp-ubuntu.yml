@@ -18,7 +18,6 @@ env:
 jobs:
   build-debug:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v3
 
@@ -26,6 +25,9 @@ jobs:
         with:
           path: "**/cpm_modules"
           key: ${{ github.workflow }}-cpm-modules-${{ hashFiles('**/CMakeLists.txt', '**/*.cmake') }}
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v3
 
       - name: configure
         run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Debug
