@@ -1,5 +1,5 @@
 ignore:
-  - "kc_utils"
+  - "sandbox"
 
 comment:
   require_changes: true
