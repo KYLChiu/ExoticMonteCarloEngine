@@ -16,15 +16,16 @@ add_executable(
   thread_pool_test.cpp
   alignment_test.cpp
 )
+
 target_link_libraries(
   main
   GTest::gtest_main
 )
-
-message(${PROJECT_SOURCE_DIR})
-target_include_directories(main PUBLIC
-        "${PROJECT_SOURCE_DIR}"
-        )
+target_include_directories(main PUBLIC "${PROJECT_SOURCE_DIR}")
+if(ENABLE_TEST_COVERAGE)
+  target_compile_options(main PUBLIC -O0 -g -fprofile-arcs -ftest-coverage)
+  target_link_options(main PUBLIC -fprofile-arcs -ftest-coverage)
+endif()
 
 include(GoogleTest)
 gtest_discover_tests(main)

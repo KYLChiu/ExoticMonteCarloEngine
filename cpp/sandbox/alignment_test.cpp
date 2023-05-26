@@ -57,20 +57,20 @@ class alignment_tester {
 
    private:
     std::array<AlignmentType, NumThreads> partial_sums_;
-    std::size_t num_items_ = 1 << 30;
+    std::size_t num_items_ = 1 << 25;
     std::atomic<std::size_t> sum_;
 };
 
 TEST(FalseSharing, AlignDefault) {
     alignment_tester<16, align_default> at;
     at.launch();
-    EXPECT_EQ(at.sum().load(), 1073741824);
+    EXPECT_EQ(at.sum().load(), 33554432);
 }
 
 TEST(FalseSharing, AlignedCache) {
     alignment_tester<16, align_cache> at;
     at.launch();
-    EXPECT_EQ(at.sum().load(), 1073741824);
+    EXPECT_EQ(at.sum().load(), 33554432);
 }
 
 }  // namespace
