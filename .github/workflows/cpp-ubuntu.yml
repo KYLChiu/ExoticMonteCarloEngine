@@ -21,18 +21,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: change cwd
+        run: cd ./cpp
+
       - name: configure
-        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Debug
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Debug
 
       - name: build
         run: cmake --build build --config Debug --target all --
 
       - name: test
-        run: cd build && ctest
+        run: ctest --test-dir ./build
 
       - uses: codecov/codecov-action@v3
-        with: 
-          working-directory: ./cpp
 
   build-release:
     runs-on: ubuntu-latest
@@ -40,15 +41,16 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
+      - name: change cwd
+        run: cd ./cpp
+
       - name: configure
-        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
 
       - name: build
         run: cmake --build build --config Release --target all --
 
       - name: test
-        run: cd build && ctest
+        run: ctest --test-dir ./build
 
       - uses: codecov/codecov-action@v3
-        with: 
-          working-directory: ./cpp
