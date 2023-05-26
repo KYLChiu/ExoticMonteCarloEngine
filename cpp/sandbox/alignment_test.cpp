@@ -8,6 +8,8 @@
 #include <vector>
 #include <version>
 
+namespace {
+
 #ifdef __cpp_lib_hardware_interference_size
 constexpr std::size_t hardware_constructive_interference_size =
     std::hardware_constructive_interference_size;
@@ -17,8 +19,6 @@ constexpr std::size_t hardware_destructive_interference_size =
 constexpr std::size_t hardware_constructive_interference_size = 64;
 constexpr std::size_t hardware_destructive_interference_size = 64;
 #endif
-
-namespace {
 
 struct align_base {
     std::size_t counter_ = 0;
@@ -33,7 +33,7 @@ class alignment_tester {
     void launch() {
         const auto& do_work = [this](std::size_t thread_id) {
             std::size_t items_per_thread = num_items_ / NumThreads;
-            for (std::size_t i :
+            for (const std::size_t i :
                  std::ranges::iota_view{0UL, items_per_thread}) {
                 partial_sums_[thread_id].counter_++;
             }
@@ -42,7 +42,7 @@ class alignment_tester {
         };
 
         std::array<std::thread, NumThreads> threads;
-        for (std::size_t i : std::ranges::iota_view{0UL, NumThreads}) {
+        for (const std::size_t i : std::ranges::iota_view{0UL, NumThreads}) {
             threads[i] = std::thread(do_work, i);
         }
         for (auto& t : threads) {
@@ -53,8 +53,8 @@ class alignment_tester {
     const auto& sum() const { return sum_; }
 
    private:
-    std::size_t num_items_ = 1 << 26;
     std::array<AlignmentType, NumThreads> partial_sums_;
+    std::size_t num_items_ = 1 << 26;
     std::atomic<std::size_t> sum_;
 };
 
