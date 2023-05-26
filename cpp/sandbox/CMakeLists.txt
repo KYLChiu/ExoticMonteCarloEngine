@@ -14,7 +14,7 @@ add_executable(
   basics_test.cpp
   inheritance_test.cpp
   thread_pool_test.cpp
-  parallel_test.cpp
+  alignment_test.cpp
 )
 target_link_libraries(
   main
