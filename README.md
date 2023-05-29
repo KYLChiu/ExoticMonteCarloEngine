@@ -8,3 +8,7 @@ Learning stuff!
 
 ## python
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
+
+### To do:
+JLo to add Exotic Monte Carlo Pricer
+See: https://www.amazon.co.uk/Patterns-Derivatives-Pricing-Mathematics-Finance/dp/0521721628
