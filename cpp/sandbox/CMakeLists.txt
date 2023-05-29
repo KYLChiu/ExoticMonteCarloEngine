@@ -15,6 +15,7 @@ add_executable(
   inheritance_test.cpp
   thread_pool_test.cpp
   alignment_test.cpp
+  promise_test.cpp
 )
 
 target_link_libraries(
