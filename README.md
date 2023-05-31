@@ -12,3 +12,4 @@ Learning stuff!
 ### To do:
 JLo to add Exotic Monte Carlo Pricer
 See: https://www.amazon.co.uk/Patterns-Derivatives-Pricing-Mathematics-Finance/dp/0521721628
+

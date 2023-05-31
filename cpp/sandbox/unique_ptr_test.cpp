@@ -1,4 +1,4 @@
-#include "kc_utils/smart_pointer/unique_ptr.hpp"
+#include "kc_utils/memory/unique_ptr.hpp"
 #include <gtest/gtest.h>
 #include <sstream>
 
