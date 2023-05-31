@@ -55,7 +55,7 @@ TEST(CUDA, BasicCuda)
 TEST(CUDA, BasicCpp)
 {
     constexpr size_t N = 512 * 512;
-    constexpr size_t M = 100000;
+    constexpr size_t M = 10000;
     double data[N];
     for (int i = 0; i < N; i++)
     {
@@ -76,16 +76,16 @@ TEST(CUDA, BlackScholesCallCpp)
     double sigma = 0.2;
     double T = 1.0;
 
-    kcu::geometric_brownian_motion sde(S_0, [&r, &sigma](double X_t, double t)
-                                       { return std::make_pair(r * X_t, sigma * X_t); });
+    kcu::geometric_brownian_motion<kcu::run_type::cpp> sde(S_0, [&r, &sigma](double X_t, double t)
+                                                           { return std::make_pair(r * X_t, sigma * X_t); });
 
-    kcu::euler_maryuama<50> simulater;
+    kcu::euler_maruyama<kcu::run_type::cpp> simulater(100);
 
     const auto &payoff = [K](double S)
     { return std::max(S - K, 0.0); };
 
     auto price = std::exp(-r * T) *
-                 kcu::monte_carlo_engine<1000000, decltype(payoff)>::run(
+                 kcu::monte_carlo_engine<kcu::run_type::cpp>(1000000).run(
                      payoff, simulater, sde, T);
 
     EXPECT_TRUE(std::abs(price - analytical_call_price(S_0, K, r, sigma, T)) <
@@ -100,16 +100,16 @@ TEST(CUDA, BlackScholesPutCpp)
     double sigma = 0.2;
     double T = 1.0;
 
-    kcu::geometric_brownian_motion sde(S_0, [&r, &sigma](double X_t, double t)
-                                       { return std::make_pair(r * X_t, sigma * X_t); });
+    kcu::geometric_brownian_motion<kcu::run_type::cpp> sde(S_0, [&r, &sigma](double X_t, double t)
+                                                           { return std::make_pair(r * X_t, sigma * X_t); });
 
-    kcu::euler_maryuama<50> simulater;
+    kcu::euler_maruyama<kcu::run_type::cpp> simulater(100);
 
     const auto &payoff = [K](double S)
     { return std::max(K - S, 0.0); };
 
     auto price = std::exp(-r * T) *
-                 kcu::monte_carlo_engine<1000000, decltype(payoff)>::run(
+                 kcu::monte_carlo_engine<kcu::run_type::cpp>(1000000).run(
                      payoff, simulater, sde, T);
 
     EXPECT_TRUE(std::abs(price - analytical_put_price(S_0, K, r, sigma, T)) <
