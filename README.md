@@ -8,7 +8,7 @@ Learning stuff in cpp and python. Contributions are welcome!
 
 ### Memory:
 * [KC] [**unique_ptr**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/memory/unique_ptr.hpp): example re-implementation of `std::unique_ptr<T>` with custom deleter. 
-  * To do: invoke empty base optimisation to ensure class size is same as `T*`.
+  * To do: invoke empty base optimisation to ensure class size is same as `T*` if deleter is empty.
 
 ### Concurrency:
 * [KC] [**future_chainer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/future_chainer.hpp): implements future chaining by passing continuations to asychronously run on success (value) or failure (exception).
