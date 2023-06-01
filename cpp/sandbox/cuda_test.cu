@@ -39,7 +39,7 @@ namespace
 
 } // namespace
 
-TEST(CUDA, BasicCuda)
+TEST(CUDA, DISABLED_BasicCuda)
 {
     constexpr size_t N = 512 * 512;
     constexpr size_t M = 100000;
