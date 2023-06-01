@@ -1,6 +1,6 @@
+#include "kc_utils/concurrency/future_chainer.hpp"
 #include <gtest/gtest.h>
 #include <ranges>
-#include "kc_utils/concurrency/future_chainer.hpp"
 
 TEST(Future, OnFulfill) {
     auto future = kcu::future_chainer::then(
