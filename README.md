@@ -7,7 +7,7 @@ Learning stuff in cpp and python. Contributions are welcome!
 [![codecov](https://codecov.io/gh/KYLChiu/the-big-learning-repo/branch/master/graph/badge.svg)](https://codecov.io/gh/KYLChiu/the-big-learning-repo)
 
 ### Memory:
-* [KC] [**unique_ptr**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/memory/unique_ptr.hpp): example re-implementation of std::unique_ptr with custom deleter. 
+* [KC] [**unique_ptr**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/memory/unique_ptr.hpp): example re-implementation of `std::unique_ptr<T>` with custom deleter. 
   * To do: invoke empty base optimisation to ensure class size is same as `T*`.
 
 ### Concurrency:
