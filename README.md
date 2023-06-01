@@ -11,8 +11,8 @@ Learning stuff in cpp and python. Contributions are welcome!
   * To do: invoke empty base optimisation to ensure class size is same as `T*` if deleter is empty.
 
 ### Concurrency:
-* [KC] [**future_chainer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/future_chainer.hpp): implements future chaining by passing continuations to asychronously run on success (value) or failure (exception).
-* [KC] [**thread_pool**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/thread_pool.hpp): a light-weight class allowing scheduling of work functions onto a pool of long-running worker threads.
+* [KC] [**future_chainer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/future_chainer.hpp): implements `std::future<T>` chaining by passing continuations to run (asychronously) on a successful future (returning a value) or failed (returning an exception) future.
+* [KC] [**thread_pool**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/thread_pool.hpp): a header only class allowing scheduling of work functions onto a pool of long-running worker threads. Synchronisation is light-weight via C++20's `std::counting_semaphore`.
   * To do: implement work-stealing.
 
 ### Option pricing:
