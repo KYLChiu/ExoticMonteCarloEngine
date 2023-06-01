@@ -8,12 +8,13 @@ on:
     branches:
       - master
 
-  
 
 env:
   CTEST_OUTPUT_ON_FAILURE: 1
   CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
   CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
+
+  
 
 jobs:
   build-debug:
@@ -39,8 +40,12 @@ jobs:
     steps:
       - uses: actions/checkout@v3
 
-      - name: change cwd
-        run: cd ./cpp
+      - uses: Jimver/cuda-toolkit@v0.2.10
+        id: cuda-toolkit
+        with:
+          cuda: '11.8.0'
+    
+      - run: nvcc -V
 
       - name: configure
         run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release

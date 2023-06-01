@@ -15,11 +15,14 @@ add_executable(
   inheritance_test.cpp
   thread_pool_test.cpp
   alignment_test.cpp
+  future_chainer_test.cpp
+  cuda_test.cu
 )
 
 target_link_libraries(
   main
   GTest::gtest_main
+  ${CUDA_LIBRARIES}
 )
 target_include_directories(main PUBLIC "${PROJECT_SOURCE_DIR}")
 if(ENABLE_TEST_COVERAGE)

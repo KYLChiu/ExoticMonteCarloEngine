@@ -6,7 +6,6 @@ IncludeBlocks: Merge
 IndentCaseLabels: 'true'
 IndentWidth: '4'
 IndentWrappedFunctionNames: 'true'
-Language: Cpp
 NamespaceIndentation: Inner
 DerivePointerAlignment: false
 PointerAlignment: Left
