@@ -1,5 +1,6 @@
 #include "kc_utils/concurrency/future_chainer.hpp"
 #include <gtest/gtest.h>
+#include <numeric>
 #include <ranges>
 
 TEST(Future, OnFulfill) {
@@ -87,4 +88,33 @@ TEST(Future, SharedMultipleGets) {
     auto future2 = kcu::future_chainer::then(shared, [](int) { return 2; });
     EXPECT_EQ(future.get(), 1);
     EXPECT_EQ(future2.get(), 2);
+}
+
+TEST(Future, Gather) {
+    auto shared = std::async([]() { return 1; }).share();
+    auto future2 =
+        kcu::future_chainer::then(shared, [](int i) { return 1 + i; }).share();
+    auto future3 =
+        kcu::future_chainer::then(shared, [](int i) { return 2 + i; }).share();
+    auto future4 =
+        kcu::future_chainer::then(shared, [](int i) { return 3 + i; }).share();
+    auto gathered = kcu::future_chainer::gather(future2, future3, future4);
+    std::vector<int> expected = {2, 3, 4};
+    EXPECT_EQ(gathered.get(), expected);
+}
+
+TEST(Future, GatherThen) {
+    auto shared = std::async([]() { return 1; }).share();
+    auto future2 =
+        kcu::future_chainer::then(shared, [](int i) { return 1 + i; }).share();
+    auto future3 =
+        kcu::future_chainer::then(shared, [](int i) { return 2 + i; }).share();
+    auto future4 =
+        kcu::future_chainer::then(shared, [](int i) { return 3 + i; }).share();
+    auto sum_of_gathered = kcu::future_chainer::then(
+        kcu::future_chainer::gather(future2, future3, future4),
+        [](const std::vector<int>& v) {
+            return std::accumulate(v.begin(), v.end(), 0.);
+        });
+    EXPECT_EQ(sum_of_gathered.get(), 9);
 }
