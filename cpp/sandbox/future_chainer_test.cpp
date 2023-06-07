@@ -103,6 +103,24 @@ TEST(Future, Gather) {
     EXPECT_EQ(gathered.get(), expected);
 }
 
+TEST(Future, GatherVec) {
+    auto shared = std::async([]() { return 1; }).share();
+    auto future2 =
+        kcu::future_chainer::then(shared, [](int i) { return 1 + i; }).share();
+    auto future3 =
+        kcu::future_chainer::then(shared, [](int i) { return 2 + i; }).share();
+    auto future4 =
+        kcu::future_chainer::then(shared, [](int i) { return 3 + i; }).share();
+
+    std::vector<std::shared_future<int>> futures = {
+        std::reference_wrapper(future2), std::reference_wrapper(future3),
+        std::reference_wrapper(future4)};
+
+    auto gathered = kcu::future_chainer::gather(futures);
+    std::vector<int> expected = {2, 3, 4};
+    EXPECT_EQ(gathered.get(), expected);
+}
+
 TEST(Future, GatherThen) {
     auto shared = std::async([]() { return 1; }).share();
     auto future2 =
