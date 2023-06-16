@@ -150,7 +150,8 @@ class future_chainer final {
         return std::async(std::launch::deferred, std::move(gatherer));
     }
 
-    // Vector overload of gather().
+    // std::vector overload of gather(), with the caveat that the futures need
+    // to be of the same type (so as to be constrained in a vector).
     template <concepts::future Future>
     static auto gather(std::vector<Future> futures) {
         using T = decltype(std::declval<Future>().get());
