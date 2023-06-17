@@ -7,7 +7,7 @@ Learning stuff in cpp and python. Contributions are welcome!
 [![codecov](https://codecov.io/gh/KYLChiu/the-big-learning-repo/branch/master/graph/badge.svg)](https://codecov.io/gh/KYLChiu/the-big-learning-repo)
 
 ### Memory:
-* [KC] [**unique_ptr**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/memory/unique_ptr.hpp): example re-implementation of `std::unique_ptr<T>` with custom deleter. 
+* [KC] [**unique_ptr**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/memory/unique_ptr.hpp): example re-implementation of `std::unique_ptr<T>` with custom deleter.
   * To do: invoke empty base optimisation to ensure class size is same as `T*` if deleter is empty.
   * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/unique_ptr_test.cpp).
 
@@ -21,7 +21,7 @@ Learning stuff in cpp and python. Contributions are welcome!
 ### Option pricing:
 * [KC] [**monte_carlo_engine**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/cuda/first_order_sde.cuh): a naive implementation of multi-threaded MC for first-order (deterministic coefficient) SDEs:
 $$dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t$$
-where $W_t$ is a Wiener process. Simulation of the SDE is done via Euler-Maruyama stepping. 
+where $W_t$ is a Wiener process. Simulation of the SDE is done via Euler-Maruyama stepping.
   * To do: implement CUDA equivalent, add Milstein stepping, improve sampling.
   * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/cuda_test.cu).
 
@@ -31,4 +31,4 @@ where $W_t$ is a Wiener process. Simulation of the SDE is done via Euler-Maruyam
 ### Option pricing:
 * [JLo]: Exotic Monte Carlo Pricer
   * To do: implementation, with reference to [this book](https://www.amazon.co.uk/Patterns-Derivatives-Pricing-Mathematics-Finance/dp/0521721628).
-
+  * price path dependent single asset equity options
