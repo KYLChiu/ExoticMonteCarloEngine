@@ -7,3 +7,6 @@ pytest-cov
 codecov
 mypy
 gitchangelog
+matplotlib
+scipy
+numpy

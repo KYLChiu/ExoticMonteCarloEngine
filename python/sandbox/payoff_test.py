@@ -12,6 +12,12 @@ def test_put_payoff():
     assert Put.payoff(spot=0.5) == 2.5
     assert Put.payoff(spot=5.5) == 0.
 
+def test_double_digital_payoff():
+    DD = O.PayOffDoubleDigital(upper=30., lower=20.)
+    assert DD.payoff(spot=25) == 1
+    assert DD.payoff(spot=0.5) == 0
+    assert DD.payoff(spot=50) == 0.
+
 def test_put_option_payoff():
     Put = O.PayOffPut(strike=3.)
     PutOption = O.VanillaOption(Put, 5.)
