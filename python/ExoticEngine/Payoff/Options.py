@@ -19,7 +19,7 @@ class PayOffCall(PayOff):
 
 @final
 class PayOffPut(PayOff):
-    def __init__(self, strike):
+    def __init__(self, strike: float):
         self._strike = strike
 
     def payoff(self, spot: float) -> float:
@@ -28,9 +28,9 @@ class PayOffPut(PayOff):
 
 @final
 class PayOffDoubleDigital(PayOff):
-    def __init__(self, upper, lower):
-        self._upper = upper
-        self._lower = lower
+    def __init__(self, upper: float, lower: float):
+        self._upper: float = upper
+        self._lower: float = lower
         assert self._lower < self._upper
 
     def payoff(self, spot: float) -> float:
@@ -41,7 +41,7 @@ class PayOffDoubleDigital(PayOff):
 
 
 class VanillaOption:
-    def __init__(self, pay_off, expiry: float): # mypy complains if pay_off: type[PayOff]
+    def __init__(self, pay_off: PayOff, expiry: float):
         self._pay_off = pay_off
         self._expiry = expiry
 

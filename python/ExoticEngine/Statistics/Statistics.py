@@ -3,7 +3,7 @@ import statistics as stat
 from enum import Enum
 import numpy as np
 from typing import final
-# from typing import Union # Union type check only avaliable in python10
+# from typing import Union # Union type check only in python10
 
 
 class ConditionType(Enum):
@@ -14,31 +14,34 @@ class ConditionType(Enum):
 
 @final
 class TerminationCondition:
-    def __init__(self, condition: type[ConditionType], criteria):
+    def __init__(self, condition: ConditionType, criteria: float):
         self._condition = condition.value
         self._criteria = criteria
         if self._condition == "PATH_COUNT":
-            assert criteria % 1 == 0
-            self._criteria = int(criteria)
-        assert self._criteria > 0.
+            assert isinstance(criteria, int)
+        else:
+            assert isinstance(criteria, float)
+        assert criteria > 0.
 
-    def get_termination_criteria(self):
+    def get_termination_criteria(self) -> float:
         return self._criteria
 
-    def get_termination_condition(self):
+    def get_termination_condition(self) -> str:
         return self._condition
 
 
 @final
 class GetStatistics:
-    def __init__(self, termination_condition):  # mypy error if termination_condition: type[TerminationCondition]
+    def __init__(self, termination_condition: TerminationCondition):
         self._running_sum: float = 0.
+        self.__prev_running_sum: float = 0.
         self._paths_done: int = 0
         self._result_set: list[float] = []
-        self._termination_condition = termination_condition
+        self._termination_condition: TerminationCondition = termination_condition
 
-    def add_one_result(self, new_result) -> None:
+    def add_one_result(self, new_result: float) -> None:
         assert len(self._result_set) == self._paths_done
+        self.__prev_running_sum = self._running_sum
         self._running_sum += new_result
         self._paths_done += 1
         self._result_set.append(new_result)
@@ -48,7 +51,7 @@ class GetStatistics:
 
     def get_std_dev_so_far(self) -> float:
         if self._paths_done < 2:
-            raise Exception("Path count is less than 2, path count = " + str(self._paths_done))
+            raise Exception(f"Path count is less than 2, path count = {self._paths_done}")
         return stat.stdev(self._result_set)  # might not be fast?
 
     def get_std_err_so_far(self) -> float:
@@ -68,14 +71,14 @@ class GetStatistics:
         if self._paths_done <= min_path:
             return False
         elif condition == "CONVERGENCE":
-            return abs(self._running_sum - stat.mean(self._result_set[:-1])) <= criteria
+            return abs(self.get_mean_so_far() - self.__prev_running_sum/(self._paths_done-1)) <= criteria
         elif condition == "STANDARD_ERROR":
-            return abs(self.get_std_dev_so_far()) <= criteria
+            return abs(self.get_std_err_so_far()) <= criteria
         elif condition == "PATH_COUNT":
             if self._paths_done > criteria:
-                print("WARNING! path count (" + str(self.get_path_count()) + ") > termination criteria (" + str(
-                    criteria) + ")")
+                print(f"WARNING! path count ({self.get_path_count()}) > termination criteria {criteria})")
                 return True
             return self._paths_done == criteria
         else:
-            raise Exception("Should never happen...condition = " + condition)
+            raise Exception(f"Should never happen...condition = {condition}")
+

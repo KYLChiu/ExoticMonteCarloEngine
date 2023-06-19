@@ -29,7 +29,7 @@ class RandomBase(abc.ABC):
 
 @final
 class TestRandom(RandomBase):
-    def __init__(self, random_number_type: type[RandomNumberType]):
+    def __init__(self, random_number_type: RandomNumberType):
         """Dummy class"""
         self._random_number_type = random_number_type.value
 

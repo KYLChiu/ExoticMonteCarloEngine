@@ -1,10 +1,11 @@
 import scipy as sci
 import numpy as np
 from inspect import isfunction
+from collections.abc import Callable
 
 
 class Parameter:
-    def __init__(self, param):
+    def __init__(self, param: Callable):
         """
         Takes in a deterministic function
         not the best design for now...
