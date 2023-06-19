@@ -1,9 +1,10 @@
 import abc
 import numpy as np
 from enum import Enum
+from typing import final
 
 class RandomNumberType(Enum):
-    PATH_COUNT = "NUMPY"
+    NUMPY = "NUMPY"
     PSEUDO_RANDOM = "PSEUDO_RANDOM"
     SOBOL = "SOBOL"
 
@@ -23,6 +24,7 @@ class RandomBase(abc.ABC):
         """
         return np.random.normal()
 
+@final
 class TestRandom(RandomBase):
     def __init__(self, random_number_type: type[RandomNumberType]):
         """Dummy class"""
