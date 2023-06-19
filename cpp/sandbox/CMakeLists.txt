@@ -16,6 +16,7 @@ add_executable(
   thread_pool_test.cpp
   alignment_test.cpp
   future_chainer_test.cpp
+  data_structures_test.cpp
   cuda_test.cu
 )
 
