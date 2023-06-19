@@ -22,7 +22,7 @@ class TerminationCondition:
             self._criteria = int(criteria)
         assert self._criteria > 0.
 
-    def get_termination_criteria(self) -> Union[float, int]:
+    def get_termination_criteria(self):
         return self._criteria
 
     def get_termination_condition(self):
