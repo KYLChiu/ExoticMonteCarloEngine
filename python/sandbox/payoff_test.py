@@ -1,31 +1,31 @@
 from ExoticEngine.Payoff import Options as O
 
 def test_call_payoff():
-    Call = O.PayOffCall(strike=1.)
-    assert Call.payoff(spot=1.) == 0
-    assert Call.payoff(spot=0.5) == 0
-    assert Call.payoff(spot=1.5) == 0.5
+    call = O.PayOffCall(strike=1.)
+    assert call.payoff(spot=1.) == 0
+    assert call.payoff(spot=0.5) == 0
+    assert call.payoff(spot=1.5) == 0.5
 
 def test_put_payoff():
-    Put = O.PayOffPut(strike=3.)
-    assert Put.payoff(spot=1.) == 2.
-    assert Put.payoff(spot=0.5) == 2.5
-    assert Put.payoff(spot=5.5) == 0.
+    put = O.PayOffPut(strike=3.)
+    assert put.payoff(spot=1.) == 2.
+    assert put.payoff(spot=0.5) == 2.5
+    assert put.payoff(spot=5.5) == 0.
 
 def test_double_digital_payoff():
-    DD = O.PayOffDoubleDigital(upper=30., lower=20.)
-    assert DD.payoff(spot=25) == 1
-    assert DD.payoff(spot=0.5) == 0
-    assert DD.payoff(spot=50) == 0.
+    double_digital = O.PayOffDoubleDigital(upper=30., lower=20.)
+    assert double_digital.payoff(spot=25) == 1
+    assert double_digital.payoff(spot=0.5) == 0
+    assert double_digital.payoff(spot=50) == 0.
 
 def test_put_option_payoff():
-    Put = O.PayOffPut(strike=3.)
-    PutOption = O.VanillaOption(Put, 5.)
-    assert PutOption.get_payoff(spot=1.) == 2.
-    assert PutOption.get_payoff(spot=6.) == 0.
+    put = O.PayOffPut(strike=3.)
+    put_option = O.VanillaOption(put, 5.)
+    assert put_option.get_payoff(spot=1.) == 2.
+    assert put_option.get_payoff(spot=6.) == 0.
 
 def test_option_expiry():
-    Call = O.PayOffCall(strike=3.)
+    call = O.PayOffCall(strike=3.)
     expiry = 5.
-    CallOption = O.VanillaOption(Call, expiry)
-    assert CallOption.get_expiry() == expiry
+    call_option = O.VanillaOption(call, expiry)
+    assert call_option.get_expiry() == expiry

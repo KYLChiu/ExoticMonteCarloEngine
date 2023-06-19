@@ -1,5 +1,11 @@
 import abc
 import numpy as np
+from enum import Enum
+
+class RandomNumberType(Enum):
+    PATH_COUNT = "NUMPY"
+    PSEUDO_RANDOM = "PSEUDO_RANDOM"
+    SOBOL = "SOBOL"
 
 class RandomBase(abc.ABC):
     @abc.abstractmethod
@@ -17,11 +23,10 @@ class RandomBase(abc.ABC):
         """
         return np.random.normal()
 
-
 class TestRandom(RandomBase):
-    def __init__(self, random_number_type):
+    def __init__(self, random_number_type: type[RandomNumberType]):
         """Dummy class"""
-        self._random_number_type = random_number_type
+        self._random_number_type = random_number_type.value
 
     def get_uniforms(self):
         raise Exception("Not implemented")

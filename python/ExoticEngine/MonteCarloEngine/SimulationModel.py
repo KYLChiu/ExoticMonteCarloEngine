@@ -1,24 +1,25 @@
 import abc
 import numpy as np
+from typing import final
+from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 
 from ExoticEngine.MarketDataObject import Parameter as P
 
-
 class Model(abc.ABC):
     @abc.abstractmethod
-    def sde(self):
+    def sde(self) -> float:
         pass
 
-
+@final
 class BSModel(Model):
-    def __init__(self, spot, r, vol, RNG):
+    def __init__(self, spot: float, r: float, vol: float, RNG: type[RNG.RandomBase]):
         """Smile NOT included yet"""
         self._spot = spot  # constant
         self._r = r  # constant
         self._vol = vol  # constant
         self._RNG = RNG
 
-    def sde(self, dt):
+    def sde(self, dt) -> float:
         """
         returns: dS = ...
         GBM has exact solution - dS = S(t) - S(0) = ...
