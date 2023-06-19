@@ -20,10 +20,10 @@ class TerminationCondition:
             self._criteria = int(criteria)
         assert self._criteria > 0.
 
-    def get_termination_criteria(self) -> float:
+    def get_termination_criteria(self) -> float | int:
         return self._criteria
 
-    def get_termination_condition(self) -> str:
+    def get_termination_condition(self):
         return self._condition
 
 @final
