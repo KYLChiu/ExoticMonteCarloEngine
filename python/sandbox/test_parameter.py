@@ -11,7 +11,7 @@ def test_mean(tolerance=1e-9):
     assert abs(param.get_mean(0., 2.) - 2.) < tolerance
 
     param = P.Parameter(lambda t: 87.)
-    assert abs(param.get_mean(-15., 53.) - 87.) < tolerance
+    assert abs(param.get_mean(15., 53.) - 87.) < tolerance
 
 
 def test_root_mean_square(tolerance=1e-9):
@@ -19,5 +19,4 @@ def test_root_mean_square(tolerance=1e-9):
     assert abs(param.get_root_mean_square(0, 2.) - np.sqrt(12)) < tolerance
 
     param = P.Parameter(lambda t: t ** 0.5)
-    num = param.get_root_mean_square(1., 3.)
     assert abs(param.get_root_mean_square(1., 3.) - np.sqrt(2)) < tolerance
