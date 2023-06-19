@@ -3,6 +3,7 @@ import statistics as stat
 from enum import Enum
 import numpy as np
 from typing import final
+from typing import Union
 
 
 class ConditionType(Enum):
@@ -21,7 +22,7 @@ class TerminationCondition:
             self._criteria = int(criteria)
         assert self._criteria > 0.
 
-    def get_termination_criteria(self) -> float | int:
+    def get_termination_criteria(self) -> Union[float, int]:
         return self._criteria
 
     def get_termination_condition(self):
@@ -30,7 +31,7 @@ class TerminationCondition:
 
 @final
 class GetStatistics:
-    def __init__(self, termination_condition): # mypy error if termination_condition: type[TerminationCondition]
+    def __init__(self, termination_condition):  # mypy error if termination_condition: type[TerminationCondition]
         self._running_sum: float = 0.
         self._paths_done: int = 0
         self._result_set: list[float] = []
