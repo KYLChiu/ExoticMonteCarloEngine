@@ -71,7 +71,7 @@ class GetStatistics:
         if self._paths_done <= min_path:
             return False
         elif condition == "CONVERGENCE":
-            return abs(self.get_mean_so_far() - self.__prev_running_sum/(self._paths_done-1)) <= criteria
+            return abs(self.get_mean_so_far() - self.__prev_running_sum/(self.get_path_count()-1)) <= criteria
         elif condition == "STANDARD_ERROR":
             return abs(self.get_std_err_so_far()) <= criteria
         elif condition == "PATH_COUNT":
