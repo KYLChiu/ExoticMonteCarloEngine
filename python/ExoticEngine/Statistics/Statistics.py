@@ -3,7 +3,7 @@ import statistics as stat
 from enum import Enum
 import numpy as np
 from typing import final
-from typing import Union
+# from typing import Union # Union type check only avaliable in python10
 
 
 class ConditionType(Enum):
@@ -14,7 +14,7 @@ class ConditionType(Enum):
 
 @final
 class TerminationCondition:
-    def __init__(self, condition: type[ConditionType], criteria: float | int):
+    def __init__(self, condition: type[ConditionType], criteria):
         self._condition = condition.value
         self._criteria = criteria
         if self._condition == "PATH_COUNT":
