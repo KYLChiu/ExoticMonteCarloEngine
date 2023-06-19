@@ -1,6 +1,7 @@
 from ExoticEngine.MarketDataObject import Parameter as P
 import numpy as np
 
+
 # Parameter probably needs refactoring later
 
 def test_mean(tolerance=1e-9):

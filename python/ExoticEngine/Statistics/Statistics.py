@@ -4,15 +4,16 @@ from enum import Enum
 import numpy as np
 from typing import final
 
+
 class ConditionType(Enum):
     PATH_COUNT = "PATH_COUNT"
     STANDARD_ERROR = "STANDARD_ERROR"
     CONVERGENCE = "CONVERGENCE"
 
+
 @final
 class TerminationCondition:
-    def __init__(self, condition: type[ConditionType], criteria: float):
-        """Try to make this more type safe"""
+    def __init__(self, condition: type[ConditionType], criteria: float | int):
         self._condition = condition.value
         self._criteria = criteria
         if self._condition == "PATH_COUNT":
@@ -26,13 +27,14 @@ class TerminationCondition:
     def get_termination_condition(self):
         return self._condition
 
+
 @final
 class GetStatistics:
-    def __init__(self, termination_condition: type[TerminationCondition]):
+    def __init__(self, termination_condition): # mypy error if termination_condition: type[TerminationCondition]
         self._running_sum: float = 0.
         self._paths_done: int = 0
         self._result_set: list[float] = []
-        self._termination_condition: type[TerminationCondition] = termination_condition
+        self._termination_condition = termination_condition
 
     def add_one_result(self, new_result) -> None:
         assert len(self._result_set) == self._paths_done
@@ -45,8 +47,8 @@ class GetStatistics:
 
     def get_std_dev_so_far(self) -> float:
         if self._paths_done < 2:
-            raise Exception("Path count is less than 2, path count = "+str(self._paths_done))
-        return stat.stdev(self._result_set) # might not be fast?
+            raise Exception("Path count is less than 2, path count = " + str(self._paths_done))
+        return stat.stdev(self._result_set)  # might not be fast?
 
     def get_std_err_so_far(self) -> float:
         return self.get_std_dev_so_far() / np.sqrt(self._paths_done)
@@ -70,9 +72,9 @@ class GetStatistics:
             return abs(self.get_std_dev_so_far()) <= criteria
         elif condition == "PATH_COUNT":
             if self._paths_done > criteria:
-                print("WARNING! path count ("+str(self.get_path_count())+") > termination criteria ("+str(criteria)+")")
+                print("WARNING! path count (" + str(self.get_path_count()) + ") > termination criteria (" + str(
+                    criteria) + ")")
                 return True
             return self._paths_done == criteria
         else:
-            raise Exception("Should never happen...condition = "+condition)
-
+            raise Exception("Should never happen...condition = " + condition)

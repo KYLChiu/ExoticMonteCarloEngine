@@ -1,7 +1,5 @@
-import numpy as np
-import matplotlib.pyplot as plt
-
 from ExoticEngine.Statistics import Statistics as Stats
+
 
 def test_path_count_termination():
     terminal_path = 10

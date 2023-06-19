@@ -1,18 +1,21 @@
 import abc
 from typing import final
 
+
 class PayOff(abc.ABC):
     @abc.abstractmethod
-    def payoff(self: float) -> float:
+    def payoff(self, spot: float) -> float:
         pass
+
 
 @final
 class PayOffCall(PayOff):
-    def __init__(self, strike):
+    def __init__(self, strike: float):
         self._strike = strike
 
     def payoff(self, spot: float) -> float:
-        return max(spot-self._strike, 0)
+        return max(spot - self._strike, 0)
+
 
 @final
 class PayOffPut(PayOff):
@@ -20,7 +23,8 @@ class PayOffPut(PayOff):
         self._strike = strike
 
     def payoff(self, spot: float) -> float:
-        return max(self._strike-spot, 0)
+        return max(self._strike - spot, 0)
+
 
 @final
 class PayOffDoubleDigital(PayOff):
@@ -35,8 +39,9 @@ class PayOffDoubleDigital(PayOff):
         else:
             return 1
 
+
 class VanillaOption:
-    def __init__(self, pay_off: type[PayOff], expiry: float):
+    def __init__(self, pay_off, expiry: float): # mypy complains if pay_off: type[PayOff]
         self._pay_off = pay_off
         self._expiry = expiry
 
@@ -45,9 +50,3 @@ class VanillaOption:
 
     def get_payoff(self, spot: float) -> float:
         return self._pay_off.payoff(spot)
-
-
-
-
-
-

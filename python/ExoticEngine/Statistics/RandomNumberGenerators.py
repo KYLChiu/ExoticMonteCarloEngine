@@ -3,10 +3,12 @@ import numpy as np
 from enum import Enum
 from typing import final
 
+
 class RandomNumberType(Enum):
     NUMPY = "NUMPY"
     PSEUDO_RANDOM = "PSEUDO_RANDOM"
     SOBOL = "SOBOL"
+
 
 class RandomBase(abc.ABC):
     @abc.abstractmethod
@@ -23,6 +25,7 @@ class RandomBase(abc.ABC):
         returns a single standard normal rv
         """
         return np.random.normal()
+
 
 @final
 class TestRandom(RandomBase):

@@ -2,6 +2,7 @@ import scipy as sci
 import numpy as np
 from inspect import isfunction
 
+
 class Parameter:
     def __init__(self, param):
         """
@@ -16,11 +17,11 @@ class Parameter:
         """returns: int_t1^t2 param(t) dt / (t2-t1)"""
         assert t2 >= t1
         assert t1 >= 0
-        return sci.integrate.quad(self._param, t1, t2)[0] / (t2-t1)
+        return sci.integrate.quad(self._param, t1, t2)[0] / (t2 - t1)
 
     def get_root_mean_square(self, t1: float, t2: float) -> float:
         """returns: int_t1^t2 param(t)^2 dt / (t2-t1)"""
         assert t2 >= t1
         assert t1 >= 0
-        integrand = lambda t: self._param(t)**2
-        return np.sqrt( sci.integrate.quad(integrand, t1, t2)[0] / (t2-t1) )
+        integrand = lambda t: self._param(t) ** 2
+        return np.sqrt(sci.integrate.quad(integrand, t1, t2)[0] / (t2 - t1))
