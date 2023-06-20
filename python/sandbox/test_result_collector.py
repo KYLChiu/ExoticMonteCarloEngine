@@ -38,4 +38,4 @@ def test_mean_value():
     for i in range(terminal_path):
         collector.add_one_result(i)
         assert collector.get_pathwise_results()[i] == i
-    assert collector.get_mean_so_far() == 4.5
+    assert collector.get_mean() == 4.5

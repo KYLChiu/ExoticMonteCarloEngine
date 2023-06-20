@@ -46,16 +46,16 @@ class GetStatistics:
         self._paths_done += 1
         self._result_set.append(new_result)
 
-    def get_mean_so_far(self) -> float:
+    def get_mean(self) -> float:
         return self._running_sum / self._paths_done
 
-    def get_std_dev_so_far(self) -> float:
+    def get_std_dev(self) -> float:
         if self._paths_done < 2:
             raise Exception(f"Path count is less than 2, path count = {self._paths_done}")
         return stat.stdev(self._result_set)  # might not be fast?
 
-    def get_std_err_so_far(self) -> float:
-        return self.get_std_dev_so_far() / np.sqrt(self._paths_done)
+    def get_std_err(self) -> float:
+        return self.get_std_dev() / np.sqrt(self._paths_done)
 
     def get_path_count(self) -> int:
         return self._paths_done
@@ -64,19 +64,23 @@ class GetStatistics:
         assert len(self._result_set) == self._paths_done
         return self._result_set
 
-    def terminate(self, min_path: int = 5) -> bool:
+    def terminate(self, min_path: int = 5, max_path: int = 10000) -> bool:
         assert min_path >= 2
+        assert max_path > min_path
         condition = self._termination_condition.get_termination_condition()
         criteria = self._termination_condition.get_termination_criteria()
         if self._paths_done <= min_path:
             return False
+        elif self._paths_done >= max_path:
+            print(f"WARNING! Maximum number of paths reached: path_count={self.get_path_count()}, max_path={max_path}")
+            return True
         elif condition == "CONVERGENCE":
-            return abs(self.get_mean_so_far() - self.__prev_running_sum/(self.get_path_count()-1)) <= criteria
+            return abs(self.get_mean() - self.__prev_running_sum/(self.get_path_count()-1)) <= criteria
         elif condition == "STANDARD_ERROR":
-            return abs(self.get_std_err_so_far()) <= criteria
+            return abs(self.get_std_err()) <= criteria
         elif condition == "PATH_COUNT":
             if self._paths_done > criteria:
-                print(f"WARNING! path count ({self.get_path_count()}) > termination criteria {criteria})")
+                print(f"WARNING! path_count ({self.get_path_count()}) > termination criteria {criteria})")
                 return True
             return self._paths_done == criteria
         else:
