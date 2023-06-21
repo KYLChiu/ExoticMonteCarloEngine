@@ -30,7 +30,7 @@ def vanilla_mc_pricer(option: O.VanillaOption,
     collector = copy.deepcopy(result_collector)  # not sure if memory efficient
     discount_factor = np.exp(-rate.get_mean(0., expiry) * expiry)
     terminate = False
-    spot_t0 = sim_model.get_spot()
+    spot_t0 = sim_model.get_day0()
     while not terminate:
         discounted_payoff = discount_factor * option.get_payoff(spot=sim_model.sde(0, expiry) + spot_t0)
         collector.add_one_result(discounted_payoff)

@@ -3,6 +3,8 @@ import statistics as stat
 from enum import Enum
 import numpy as np
 from typing import final
+
+
 # from typing import Union # Union type check only in python10
 
 
@@ -75,7 +77,7 @@ class GetStatistics:
             print(f"WARNING! Maximum number of paths reached: path_count={self.get_path_count()}, max_path={max_path}")
             return True
         elif condition == "CONVERGENCE":
-            return abs(self.get_mean() - self.__prev_running_sum/(self.get_path_count()-1)) <= criteria
+            return abs(self.get_mean() - self.__prev_running_sum / (self.get_path_count() - 1)) <= criteria
         elif condition == "STANDARD_ERROR":
             return abs(self.get_std_err()) <= criteria
         elif condition == "PATH_COUNT":
@@ -85,4 +87,3 @@ class GetStatistics:
             return self._paths_done == criteria
         else:
             raise Exception(f"Should never happen...condition = {condition}")
-

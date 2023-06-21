@@ -11,6 +11,10 @@ class Model(abc.ABC):
     def sde(self, t1: float, t2: float) -> float:
         pass
 
+    @abc.abstractmethod
+    def get_day0(self):
+        pass
+
 
 @final
 class BSModel(Model):
@@ -32,7 +36,7 @@ class BSModel(Model):
         self._vol = vol
         self._RNG = RNG
 
-    def get_spot(self):
+    def get_day0(self):
         return self._spot
 
     def sde(self, t1: float, t2: float) -> float:
