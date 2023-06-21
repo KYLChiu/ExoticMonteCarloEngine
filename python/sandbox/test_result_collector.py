@@ -1,5 +1,4 @@
 from ExoticEngine.Statistics import Statistics as Stats
-import numpy as np
 
 
 def test_path_count_termination():

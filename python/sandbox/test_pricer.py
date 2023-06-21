@@ -1,13 +1,8 @@
 import numpy as np
-import matplotlib.pyplot as plt
 
 from ExoticEngine.Payoff import Options as O
-from ExoticEngine.Statistics import Statistics as Stats
-from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
-from ExoticEngine.MarketDataObject import Parameter as P
 from sandbox import pricer_helper as helper
-
 from ExoticEngine import MonteCarloPricer as Pricer
 
 
