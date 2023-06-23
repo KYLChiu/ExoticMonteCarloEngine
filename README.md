@@ -32,3 +32,4 @@ where $W_t$ is a Wiener process. Simulation of the SDE is done via Euler-Maruyam
 * [JLo]: Exotic Monte Carlo Pricer
   * To do: implementation, with reference to [this book](https://www.amazon.co.uk/Patterns-Derivatives-Pricing-Mathematics-Finance/dp/0521721628).
   * price path dependent single asset equity options
+  * Examples: [pricer unit tests](https://github.com/KYLChiu/the-big-learning-repo/blob/master/python/sandbox/test_pricer.py) and [jupyter notebook](https://github.com/KYLChiu/the-big-learning-repo/blob/master/python/ExoticEngine/VanilliaAnalytics.ipynb)
