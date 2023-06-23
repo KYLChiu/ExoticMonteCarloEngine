@@ -1,0 +1,38 @@
+import copy
+
+import numpy as np
+
+from ExoticEngine.Payoff import Options as O
+from ExoticEngine.Statistics import Statistics as Stats
+from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
+from ExoticEngine.MarketDataObject import Parameter as P
+from scipy.stats import norm
+
+
+def BS_CALL(S: float, K: float, T: float, r: float, sigma: float) -> float:
+    d1 = (np.log(S / K) + (r + sigma ** 2 / 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    return S * norm.cdf(d1) - K * np.exp(-r * T) * norm.cdf(d2)
+
+
+def BS_PUT(S: float, K: float, T: float, r: float, sigma: float) -> float:
+    d1 = (np.log(S / K) + (r + sigma ** 2 / 2) * T) / (sigma * np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    return K * np.exp(-r * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
+
+
+def vanilla_mc_pricer(option: O.VanillaOption,
+                      rate: P.Parameter,
+                      sim_model: Sim.Model,
+                      result_collector: Stats.GetStatistics) -> Stats.GetStatistics:
+    expiry = option.get_expiry()
+    # create a deepy copy to avoid side effects...python pass arg by assignment (reference)
+    collector = copy.deepcopy(result_collector)  # not sure if memory efficient
+    discount_factor = np.exp(-rate.get_mean(0., expiry) * expiry)
+    terminate = False
+    spot_t0 = sim_model.get_day0()
+    while not terminate:
+        discounted_payoff = discount_factor * option.get_payoff(spot=sim_model.sde(0, expiry) + spot_t0)
+        collector.add_one_result(discounted_payoff)
+        terminate = collector.terminate()
+    return collector
