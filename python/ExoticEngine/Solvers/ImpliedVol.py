@@ -1,12 +1,13 @@
 import abc
+from collections.abc import Callable
 from enum import Enum
+from inspect import isfunction
 from typing import final
 
 import numpy as np
 from scipy.stats import norm
 
 from ExoticEngine import MonteCarloPricer as Pricer
-from ExoticEngine.MarketDataObject import Parameter as P
 
 
 class PUT_CALL(Enum):
@@ -20,7 +21,8 @@ class InvertFunction:
     If f is multidimensional, then need to define derived class
     """
 
-    def __init__(self, function):
+    def __init__(self, function: Callable):
+        assert isfunction(function)
         self._func = function
 
     @abc.abstractmethod
