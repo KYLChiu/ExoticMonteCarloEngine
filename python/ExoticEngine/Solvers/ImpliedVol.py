@@ -30,8 +30,8 @@ class BSModel(InverseFunctionObject):
                  rate: P.Parameter):
         self._S = spot
         self._K = strike
-        self._rate = rate
-        self.T = maturity
+        self._r = rate
+        self._T = maturity
         self._put_call = PUT_CALL(put_call_flag)
 
     def f(self, x: float):
