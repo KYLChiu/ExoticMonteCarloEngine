@@ -4,12 +4,14 @@ from typing import final
 
 
 class NumericalInversion(abc.ABC):
-    def __init__(self,
-                 func_obj: IV.InvertFunction,
-                 target: float,
-                 start: list[float],
-                 tolerance: float = 1e-8,
-                 max_iteration: int = 30):
+    def __init__(
+        self,
+        func_obj: IV.InvertFunction,
+        target: float,
+        start: list[float],
+        tolerance: float = 1e-8,
+        max_iteration: int = 30,
+    ):
         assert tolerance >= 1e-13
         assert 2 < max_iteration < 100
         assert 0 < len(start) <= 2
@@ -22,8 +24,10 @@ class NumericalInversion(abc.ABC):
 
     def _eval_termination_condition(self, x):
         if self._counter >= self._max_iteration:
-            print(f"WARNING: max number of iterations ({self._max_iteration}) reached!! \
-                    target={self._target}, current={x}, tolerance={self._tolerance}")
+            print(
+                f"WARNING: max number of iterations ({self._max_iteration}) reached!! \
+                    target={self._target}, current={x}, tolerance={self._tolerance}"
+            )
             return True
         else:
             return abs(x - self._target) < self._tolerance
@@ -32,10 +36,10 @@ class NumericalInversion(abc.ABC):
     def solver(self):
         pass
 
+
 # Bisection can be slow
 @final
 class Bisection(NumericalInversion):
-
     def solver(self):
         """
         Assumes f: R -> R is a monotonically increasing function
@@ -48,8 +52,10 @@ class Bisection(NumericalInversion):
         elif self._start[0] > self._start[1]:
             upper, lower = self._start[0], self._start[1]
         else:
-            raise Exception(f"Starting bounds cannot be the same: " + \
-                            f"lower={self._start[0]}, upper={self._start[1]}")
+            raise Exception(
+                f"Starting bounds cannot be the same: "
+                + f"lower={self._start[0]}, upper={self._start[1]}"
+            )
         mid_point = 0.5 * (upper + lower)
         y = self._F.f(mid_point)
         assert self._F.f(upper) >= y >= self._F.f(lower)
@@ -67,12 +73,10 @@ class Bisection(NumericalInversion):
         return mid_point
 
 
-
 # Newton-Raphson is fast,
 # but requires first order derivative to be well-defined
 @final
 class NewtonRaphson(NumericalInversion):
-
     def solver(self):
         """
         Assumes f: R -> R is a monotonically increasing function

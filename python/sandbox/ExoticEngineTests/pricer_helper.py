@@ -3,10 +3,7 @@ from ExoticEngine.MarketDataObject import Parameter as P
 from ExoticEngine.Statistics import Statistics as Stats
 
 
-def build_constant_market_param(rate: float,
-                                vol: float,
-                                repo: float,
-                                div: float):
+def build_constant_market_param(rate: float, vol: float, repo: float, div: float):
     Rate = P.Parameter(param=lambda t: rate)
     Vol = P.Parameter(param=lambda t: vol)
     Repo = P.Parameter(param=lambda t: repo)

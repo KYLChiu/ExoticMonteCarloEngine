@@ -36,12 +36,14 @@ class BSModel(InvertFunction):
     No dividend and repo rate
     """
 
-    def __init__(self,
-                 put_call_flag: str,
-                 spot: float,
-                 strike: float,
-                 rate: float,
-                 maturity: float):
+    def __init__(
+        self,
+        put_call_flag: str,
+        spot: float,
+        strike: float,
+        rate: float,
+        maturity: float,
+    ):
         self._S = spot
         self._K = strike
         self._r = rate
@@ -54,11 +56,15 @@ class BSModel(InvertFunction):
         elif self._put_call.value == "CALL":
             return Pricer.BS_CALL(self._S, self._K, self._T, self._r, sigma)
         else:
-            raise Exception(f"This is impossible: check put_call_flag: {self._put_call.value}")
+            raise Exception(
+                f"This is impossible: check put_call_flag: {self._put_call.value}"
+            )
 
     def derivative(self, sigma: float):
         """returns: vega"""
-        d1 = (np.log(self._S / self._K) + (self._r + sigma ** 2 / 2) * self._T) / (sigma * np.sqrt(self._T))
+        d1 = (np.log(self._S / self._K) + (self._r + sigma**2 / 2) * self._T) / (
+            sigma * np.sqrt(self._T)
+        )
         return self._S * np.sqrt(self._T) * norm.cdf(d1)
 
 
@@ -69,7 +75,7 @@ class Polynomial(InvertFunction):
         self._coefficients = coefficients
 
     def f(self, x: float) -> float:
-        """returns: sum_{i=0} a_i x^i """
+        """returns: sum_{i=0} a_i x^i"""
         total = 0
         for i, a_i in enumerate(self._coefficients):
             total += a_i * (x ** float(i))
