@@ -1,7 +1,8 @@
+import numpy as np
+
+from ExoticEngine import MonteCarloPricer as Pricer
 from ExoticEngine.Solvers import ImpliedVol as IV
 from ExoticEngine.Solvers import solvers
-from ExoticEngine import MonteCarloPricer as Pricer
-import numpy as np
 
 
 def test_bisection_solver(tolerance=1e-7):

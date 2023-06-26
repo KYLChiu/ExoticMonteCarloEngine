@@ -1,6 +1,7 @@
+import numpy as np
+
 from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
 from sandbox.ExoticEngineTests import pricer_helper as helper
-import numpy as np
 
 
 def test_BS_simulation_zero_rate_zero_vol():

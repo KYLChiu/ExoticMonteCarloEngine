@@ -1,9 +1,10 @@
 import abc
-import numpy as np
 from typing import final
-from ExoticEngine.Statistics import RandomNumberGenerators as RNG
+
+import numpy as np
 
 from ExoticEngine.MarketDataObject import Parameter as P
+from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 
 
 class Model(abc.ABC):

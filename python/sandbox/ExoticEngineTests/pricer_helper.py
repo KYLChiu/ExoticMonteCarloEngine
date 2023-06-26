@@ -1,5 +1,5 @@
-from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 from ExoticEngine.MarketDataObject import Parameter as P
+from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 from ExoticEngine.Statistics import Statistics as Stats
 
 

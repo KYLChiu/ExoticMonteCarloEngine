@@ -1,10 +1,12 @@
-from ExoticEngine.MarketDataObject import Parameter as P
-from ExoticEngine import MonteCarloPricer as Pricer
-from enum import Enum
 import abc
+from enum import Enum
 from typing import final
+
 import numpy as np
 from scipy.stats import norm
+
+from ExoticEngine import MonteCarloPricer as Pricer
+from ExoticEngine.MarketDataObject import Parameter as P
 
 
 class PUT_CALL(Enum):

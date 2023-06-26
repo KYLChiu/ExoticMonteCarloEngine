@@ -1,6 +1,6 @@
-from ExoticEngine.MarketDataObject import Parameter as P
 import numpy as np
 
+from ExoticEngine.MarketDataObject import Parameter as P
 
 # Parameter probably needs refactoring later
 

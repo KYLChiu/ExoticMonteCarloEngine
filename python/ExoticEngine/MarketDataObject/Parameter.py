@@ -1,7 +1,8 @@
-import scipy as sci
-import numpy as np
-from inspect import isfunction
 from collections.abc import Callable
+from inspect import isfunction
+
+import numpy as np
+import scipy as sci
 
 
 class Parameter:

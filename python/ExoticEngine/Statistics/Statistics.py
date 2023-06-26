@@ -1,9 +1,9 @@
 import abc
 import statistics as stat
 from enum import Enum
-import numpy as np
 from typing import final
 
+import numpy as np
 
 # from typing import Union # Union type check only in python10
 

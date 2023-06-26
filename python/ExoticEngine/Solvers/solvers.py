@@ -1,6 +1,7 @@
-from ExoticEngine.Solvers import ImpliedVol as IV
 import abc
 from typing import final
+
+from ExoticEngine.Solvers import ImpliedVol as IV
 
 
 class NumericalInversion(abc.ABC):

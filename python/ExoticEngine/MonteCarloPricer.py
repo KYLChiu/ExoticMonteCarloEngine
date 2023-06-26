@@ -1,12 +1,12 @@
 import copy
 
 import numpy as np
+from scipy.stats import norm
 
+from ExoticEngine.MarketDataObject import Parameter as P
+from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
 from ExoticEngine.Payoff import Options as O
 from ExoticEngine.Statistics import Statistics as Stats
-from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
-from ExoticEngine.MarketDataObject import Parameter as P
-from scipy.stats import norm
 
 
 def BS_CALL(S: float, K: float, T: float, r: float, sigma: float) -> float:
