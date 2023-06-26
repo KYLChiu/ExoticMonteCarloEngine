@@ -1,44 +1,94 @@
-from inspect import isfunction
-from collections.abc import Callable
+from ExoticEngine.Solvers import ImpliedVol as IV
+import abc
+from typing import final
 
 
-# Bisection can be slow
-# to do: Code up Newton-Raphson method
-def bisection(f: Callable,
-              target: float,
-              lower_bound: float = 1e-8,
-              upper_bound: float = 10,
-              tolerance: float = 1e-8,
-              max_iteration: int = 30):
-    """
-    Assumes f: R -> R is a monotonically increasing function
-    f must only take 1 argument
-    default max_iteration = 30 (~1e-9 min tolerance)
-    """
-    assert isfunction(f)
-    assert upper_bound > lower_bound
-    assert tolerance >= 0
-    assert 2 < max_iteration < 100
-    counter = 0
-    mid_point = 0.5 * (lower_bound + upper_bound)
-    y = f(mid_point)
-    assert f(upper_bound) > y > f(lower_bound)
-    def termination_condition(x):
-        if counter >= max_iteration:
-            print(f"WARNING: max number of iterations ({max_iteration}) reached!! \
-                    target={target}, current={x}, tolerance={tolerance}")
+class NumericalInversion(abc.ABC):
+    def __init__(self,
+                 func_obj: IV.InvertFunction,
+                 target: float,
+                 start: list[float],
+                 tolerance: float = 1e-8,
+                 max_iteration: int = 30):
+        assert tolerance >= 1e-13
+        assert 2 < max_iteration < 100
+        assert 0 < len(start) <= 2
+        self._tolerance = tolerance
+        self._max_iteration = max_iteration
+        self._start = start
+        self._target = target
+        self._F = func_obj
+        self._counter = 0
+
+    def _eval_termination_condition(self, x):
+        if self._counter >= self._max_iteration:
+            print(f"WARNING: max number of iterations ({self._max_iteration}) reached!! \
+                    target={self._target}, current={x}, tolerance={self._tolerance}")
             return True
         else:
-            return abs(x - target) < tolerance
+            return abs(x - self._target) < self._tolerance
 
-    terminate = termination_condition(y)
-    while not terminate:
-        if y < target:
-            lower_bound = mid_point
-        elif y > target:
-            upper_bound = mid_point
-        mid_point = 0.5 * (lower_bound + upper_bound)
-        y = f(mid_point)
-        counter += 1
-        terminate = termination_condition(y)
-    return mid_point
+    @abc.abstractmethod
+    def solver(self):
+        pass
+
+# Bisection can be slow
+@final
+class Bisection(NumericalInversion):
+
+    def solver(self):
+        """
+        Assumes f: R -> R is a monotonically increasing function
+        f(x) must only take 1 argument
+        default max_iteration = 30 (~1e-9 min tolerance)
+        """
+        assert len(self._start) == 2
+        if self._start[0] < self._start[1]:
+            lower, upper = self._start[0], self._start[1]
+        elif self._start[0] > self._start[1]:
+            upper, lower = self._start[0], self._start[1]
+        else:
+            raise Exception(f"Starting bounds cannot be the same: " + \
+                            f"lower={self._start[0]}, upper={self._start[1]}")
+        mid_point = 0.5 * (upper + lower)
+        y = self._F.f(mid_point)
+        assert self._F.f(upper) >= y >= self._F.f(lower)
+
+        terminate = self._eval_termination_condition(y)
+        while not terminate:
+            if y < self._target:
+                lower = mid_point
+            elif y > self._target:
+                upper = mid_point
+            mid_point = 0.5 * (upper + lower)
+            y = self._F.f(mid_point)
+            self._counter += 1
+            terminate = self._eval_termination_condition(y)
+        return mid_point
+
+
+
+# Newton-Raphson is fast,
+# but requires first order derivative to be well-defined
+@final
+class NewtonRaphson(NumericalInversion):
+
+    def solver(self):
+        """
+        Assumes f: R -> R is a monotonically increasing function
+        f(x) must only take 1 argument
+        default max_iteration = 30
+        """
+        start = self._start[0]
+        assert len(self._start) == 1
+        assert self._F.f(start) and self._F.derivative(start)
+        y = self._F.f(start)
+        terminate = self._eval_termination_condition(y)
+        while not terminate:
+            gradient = self._F.derivative(start)
+            # x_new = x0 + (target - f(x0)) / f'(x0)
+            start += (self._target - y) / gradient
+            y = self._F.f(start)
+            self._counter += 1
+            terminate = self._eval_termination_condition(y)
+        return start

@@ -6,7 +6,6 @@ from sandbox.ExoticEngineTests import pricer_helper as helper
 from ExoticEngine import MonteCarloPricer as Pricer
 
 
-
 def test_vanilla_put_pricer_zero_rate_zero_vol():
     spots = [90, 99, 100, 110]
     K, T = 100, 2.1

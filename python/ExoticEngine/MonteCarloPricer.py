@@ -26,7 +26,7 @@ def vanilla_mc_pricer(option: O.VanillaOption,
                       sim_model: Sim.Model,
                       result_collector: Stats.GetStatistics) -> Stats.GetStatistics:
     expiry = option.get_expiry()
-    # create a deepy copy to avoid side effects...python pass arg by assignment (reference)
+    # create a deepy copy to avoid side effects...python passes arg by assignment (reference)
     collector = copy.deepcopy(result_collector)  # not sure if memory efficient
     discount_factor = np.exp(-rate.get_mean(0., expiry) * expiry)
     terminate = False
