@@ -6,10 +6,12 @@ from sandbox.ExoticEngineTests import pricer_helper as helper
 from ExoticEngine import MonteCarloPricer as Pricer
 
 
+
 def test_vanilla_put_pricer_zero_rate_zero_vol():
     spots = [90, 99, 100, 110]
-    pay_off = O.PayOffPut(strike=100)
-    option = O.VanillaOption(pay_off, expiry=2)
+    K, T = 100, 2.1
+    pay_off = O.PayOffPut(strike=K)
+    option = O.VanillaOption(pay_off, expiry=T)
     param_dict = helper.build_constant_market_param(0, 0, 0, 0)
     RNGenerator = helper.build_RNG("PSEUDO_RANDOM")
     prices = [10, 1, 0, 0]
@@ -25,14 +27,15 @@ def test_vanilla_put_pricer_zero_rate_zero_vol():
                                            param_dict["Rate"],
                                            EqModel,
                                            collector)
+        analytic = Pricer.BS_PUT(S, K, T, 0, 1e-9)
         assert results.get_mean() == prices[i]
+        assert abs(prices[i] - analytic) < 1e-7
         assert results.get_std_err() == 0.
         assert results.get_path_count() == 10
 
 
 def test_vanilla_call_pricer_zero_vol(tolerance=1e-8):
-    maturity = 5.
-    K = 100
+    K, maturity = 100, 5.
     spots = [90, 100, 101, 110]
     pay_off = O.PayOffCall(strike=K)
     option = O.VanillaOption(pay_off, expiry=maturity)

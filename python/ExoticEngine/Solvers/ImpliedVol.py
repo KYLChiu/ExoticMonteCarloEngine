@@ -26,8 +26,8 @@ class BSModel(InverseFunctionObject):
                  put_call_flag: str,
                  spot: float,
                  strike: float,
-                 maturity: float,
-                 rate: P.Parameter):
+                 rate: float,
+                 maturity: float):
         self._S = spot
         self._K = strike
         self._r = rate
