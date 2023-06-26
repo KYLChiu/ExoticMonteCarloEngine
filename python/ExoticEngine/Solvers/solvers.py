@@ -9,16 +9,20 @@ def bisection(f: Callable,
               lower_bound: float = 1e-8,
               upper_bound: float = 10,
               tolerance: float = 1e-8,
-              max_iteration=100):
+              max_iteration: int = 30):
     """
     Assumes f: R -> R is a monotonically increasing function
     f must only take 1 argument
+    default max_iteration = 30 (~1e-9 min tolerance)
     """
     assert isfunction(f)
+    assert upper_bound > lower_bound
+    assert tolerance >= 0
+    assert 2 < max_iteration < 100
     counter = 0
     mid_point = 0.5 * (lower_bound + upper_bound)
     y = f(mid_point)
-
+    assert f(upper_bound) > y > f(lower_bound)
     def termination_condition(x):
         if counter >= max_iteration:
             print(f"WARNING: max number of iterations ({max_iteration}) reached!! \

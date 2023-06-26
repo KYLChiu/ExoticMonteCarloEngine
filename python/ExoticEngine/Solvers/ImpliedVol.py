@@ -11,28 +11,26 @@ class PUT_CALL(Enum):
 
 
 class InverseFunctionObject(abc.ABC):
-    abc.abstractmethod
+    @abc.abstractmethod
     def f(self, x: float):
         pass
+
 
 @final
 class BSModel(InverseFunctionObject):
     """
     Function Object
     """
+
     def __init__(self,
                  put_call_flag: str,
                  spot: float,
                  strike: float,
                  maturity: float,
-                 rate: P.Parameter,
-                 repo: P.Parameter = P.Parameter(lambda t: 0),
-                 dividend: P.Parameter = P.Parameter(lambda t: 0)):
+                 rate: P.Parameter):
         self._S = spot
         self._K = strike
         self._rate = rate
-        self._q = repo
-        self._d = dividend
         self.T = maturity
         self._put_call = PUT_CALL(put_call_flag)
 
@@ -43,4 +41,3 @@ class BSModel(InverseFunctionObject):
             return Pricer.BS_CALL(self._S, self._K, self._T, self._r, x)
         else:
             raise Exception(f"This is impossible: check put_call_flag: {self._put_call.value}")
-

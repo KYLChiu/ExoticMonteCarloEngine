@@ -1,5 +1,5 @@
 from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
-from sandbox import pricer_helper as helper
+from sandbox.ExoticEngineTests import pricer_helper as helper
 import numpy as np
 
 

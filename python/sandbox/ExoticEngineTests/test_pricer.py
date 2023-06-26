@@ -2,7 +2,7 @@ import numpy as np
 
 from ExoticEngine.Payoff import Options as O
 from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
-from sandbox import pricer_helper as helper
+from sandbox.ExoticEngineTests import pricer_helper as helper
 from ExoticEngine import MonteCarloPricer as Pricer
 
 
