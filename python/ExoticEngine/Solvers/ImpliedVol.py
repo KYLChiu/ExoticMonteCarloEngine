@@ -56,7 +56,7 @@ class BSModel(InvertFunction):
         else:
             raise Exception(f"This is impossible: check put_call_flag: {self._put_call.value}")
 
-    def derivative(self, sigma: float) -> float:
+    def derivative(self, sigma: float):
         """returns: vega"""
         d1 = (np.log(self._S / self._K) + (self._r + sigma ** 2 / 2) * self._T) / (sigma * np.sqrt(self._T))
         return self._S * np.sqrt(self._T) * norm.cdf(d1)
@@ -72,7 +72,7 @@ class Polynomial(InvertFunction):
         """returns: sum_{i=0} a_i x^i """
         total = 0
         for i, a_i in enumerate(self._coefficients):
-            total += a_i * (x ** i)
+            total += a_i * (x ** float(i))
         return total
 
     def derivative(self, x: float):
@@ -82,7 +82,7 @@ class Polynomial(InvertFunction):
         else:
             total = 0
             for i, a_i in enumerate(self._coefficients):
-                total += (a_i * i) * (x ** (i - 1))
+                total += (a_i * float(i)) * (x ** (float(i) - 1))
             return total
 
 
