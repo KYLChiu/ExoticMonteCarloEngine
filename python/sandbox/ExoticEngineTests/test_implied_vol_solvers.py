@@ -89,3 +89,31 @@ def test_implied_vol_newton_raphson_solver(tolerance=1e-8):
         )
         IV_result = NR_solver.solver()
         assert abs(IV_result - vol) < tolerance
+
+
+def test_polynomial():
+    func_objs = [IV.Polynomial([12, -2.0]), IV.Polynomial([0, 0, 2.0])]
+    functions = [(lambda x: -2.0 * x + 12), (lambda x: 2.0 * x**2)]
+    derivatives = [(lambda x: -2.0), (lambda x: 4.0 * x)]
+    inputs = [-2, 0, 80]
+    for i, f in enumerate(func_objs):
+        for x in inputs:
+            assert f.f(x) == functions[i](x)
+            assert f.derivative(x) == derivatives[i](x)
+
+
+def test_exponential():
+    func_objs = [IV.Exponential(-1.1, -0.2, 0), IV.Exponential(3.2, 1.3, -51)]
+    functions = [
+        (lambda x: -1.1 * np.exp(-0.2 * x)),
+        (lambda x: 3.2 * np.exp(1.3 * x) - 51),
+    ]
+    derivatives = [
+        (lambda x: 1.1 * 0.2 * np.exp(-0.2 * x)),
+        (lambda x: 3.2 * 1.3 * np.exp(1.3 * x)),
+    ]
+    inputs = [-22, 0, 1.2]
+    for i, f in enumerate(func_objs):
+        for x in inputs:
+            assert f.f(x) == functions[i](x)
+            assert f.derivative(x) == derivatives[i](x)

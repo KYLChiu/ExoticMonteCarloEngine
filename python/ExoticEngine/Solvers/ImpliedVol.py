@@ -21,7 +21,9 @@ class InvertFunction:
     If f is multidimensional, then need to define derived class
     """
 
+    @abc.abstractmethod
     def __init__(self, function: Callable):
+        """Child classes must use a different constructor"""
         assert isfunction(function)
         self._func = function
 
