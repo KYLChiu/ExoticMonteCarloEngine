@@ -5,6 +5,7 @@ from ExoticEngine.Solvers import ImpliedVol as IV
 
 
 class NumericalInversion(abc.ABC):
+    @final
     def __init__(
         self,
         func_obj: IV.InvertFunction,
@@ -23,6 +24,7 @@ class NumericalInversion(abc.ABC):
         self._F = func_obj
         self._counter = 0
 
+    @final
     def _eval_termination_condition(self, x):
         if self._counter >= self._max_iteration:
             print(
@@ -91,7 +93,7 @@ class NewtonRaphson(NumericalInversion):
         terminate = self._eval_termination_condition(y)
         while not terminate:
             gradient = self._F.derivative(start)
-            # x_new = x0 + (target - f(x0)) / f'(x0)
+            # NR algorithm: x_new = x0 + (target - f(x0)) / f'(x0)
             start += (self._target - y) / gradient
             y = self._F.f(start)
             self._counter += 1

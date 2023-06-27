@@ -23,12 +23,12 @@ class InvertFunction:
 
     @abc.abstractmethod
     def __init__(self, function: Callable):
-        """Child classes must use a different constructor"""
+        """Child classes must define a different constructor"""
         assert isfunction(function)
         self._func = function
 
     @abc.abstractmethod
-    def f(self, x: float):
+    def f(self, x: float) -> float:
         return self._func(x)
 
     def derivative(self, x: float):
@@ -56,7 +56,7 @@ class BSModel(InvertFunction):
         self._T = maturity
         self._put_call = PUT_CALL(put_call_flag)
 
-    def f(self, sigma: float):
+    def f(self, sigma: float) -> float:
         if self._put_call.value == "PUT":
             return Pricer.BS_PUT(self._S, self._K, self._T, self._r, sigma)
         elif self._put_call.value == "CALL":
@@ -66,7 +66,7 @@ class BSModel(InvertFunction):
                 f"This is impossible: check put_call_flag: {self._put_call.value}"
             )
 
-    def derivative(self, sigma: float):
+    def derivative(self, sigma: float) -> float:
         """returns: vega"""
         d1 = (np.log(self._S / self._K) + (self._r + sigma**2 / 2) * self._T) / (
             sigma * np.sqrt(self._T)
@@ -77,6 +77,11 @@ class BSModel(InvertFunction):
 @final
 class Polynomial(InvertFunction):
     def __init__(self, coefficients: list[float]):
+        """
+        Here, we use a list as a container to store our coefficients,
+        alternatively, we can also use *arg or **kwarg to support variable-length argument list
+        see: https://www.geeksforgeeks.org/args-kwargs-python/
+        """
         assert len(coefficients) > 0
         self._coefficients = coefficients
 
@@ -87,7 +92,7 @@ class Polynomial(InvertFunction):
             total += a_i * (x ** float(i))
         return total
 
-    def derivative(self, x: float):
+    def derivative(self, x: float) -> float:
         """returns: sum_{i=1} (a_i*i) x^(i-1)"""
         if x == 0:
             return self._coefficients[1]
@@ -105,8 +110,8 @@ class Exponential(InvertFunction):
         self._k = exponent
         self._C = constant
 
-    def f(self, x):
+    def f(self, x: float) -> float:
         return self._A * np.exp(self._k * x) + self._C
 
-    def derivative(self, x: float):
+    def derivative(self, x: float) -> float:
         return self._A * self._k * np.exp(self._k * x)
