@@ -73,7 +73,7 @@ def test_implied_vol_bisection_solver(tolerance=1e-8):
         assert abs(IV_result - vol) < tolerance
 
 
-def test_implied_vol_NR_solver(tolerance=1e-8):
+def test_implied_vol_newton_raphson_solver(tolerance=1e-8):
     S, K, T, r, vol = 100.0, 92.0, 6.0, 0.031, 0.41
     BS = [
         IV.BSModel(put_call_flag="CALL", spot=S, strike=K, rate=r, maturity=T),
