@@ -10,5 +10,4 @@ mypy
 numpy
 pandas
 pytest
-pytest - cov
 scipy
