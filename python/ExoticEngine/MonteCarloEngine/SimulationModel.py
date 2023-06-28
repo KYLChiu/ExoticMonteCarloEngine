@@ -1,5 +1,6 @@
 import abc
 import numpy as np
+
 from typing import final
 from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 

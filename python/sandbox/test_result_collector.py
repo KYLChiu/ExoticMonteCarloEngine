@@ -8,7 +8,7 @@ def test_path_count_termination():
     collector = Stats.GetStatistics(termination_condition)
     terminate = False
     while not terminate:
-        collector.add_one_result(1)
+        collector.add_results([1])
         terminate = collector.terminate(min_path=5)
     assert collector.get_path_count() == terminal_path
     assert len(collector.get_pathwise_results()) == terminal_path
@@ -22,7 +22,7 @@ def test_convergence_termination():
     series = [10, 4, 1, 1, 0]
     check = [False, False, False, False, True]
     for i, s in enumerate(series):
-        collector.add_one_result(s)
+        collector.add_results([s])
         terminate = collector.terminate(min_path=2)
         assert terminate == check[i]
     assert collector.get_path_count() == 5
@@ -35,6 +35,6 @@ def test_mean_value():
     termination_condition = Stats.TerminationCondition(condition, terminal_path)
     collector = Stats.GetStatistics(termination_condition)
     for i in range(terminal_path):
-        collector.add_one_result(i)
+        collector.add_results([i])
         assert collector.get_pathwise_results()[i] == i
     assert collector.get_mean() == 4.5

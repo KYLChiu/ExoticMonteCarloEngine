@@ -36,17 +36,17 @@ class TerminationCondition:
 class GetStatistics:
     def __init__(self, termination_condition: TerminationCondition):
         self._running_sum: float = 0.
-        self.__prev_running_sum: float = 0.
+        self._prev_running_sum: float = 0.
         self._paths_done: int = 0
         self._result_set: list[float] = []
         self._termination_condition: TerminationCondition = termination_condition
 
-    def add_one_result(self, new_result: float) -> None:
+    def add_results(self, new_results: list[float]) -> None:
         assert len(self._result_set) == self._paths_done
-        self.__prev_running_sum = self._running_sum
-        self._running_sum += new_result
-        self._paths_done += 1
-        self._result_set.append(new_result)
+        self._prev_running_sum = self._running_sum
+        self._running_sum += sum(new_results)
+        self._paths_done += len(new_results)
+        self._result_set.extend(new_results)
 
     def get_mean(self) -> float:
         return self._running_sum / self._paths_done
@@ -66,7 +66,7 @@ class GetStatistics:
         assert len(self._result_set) == self._paths_done
         return self._result_set
 
-    def terminate(self, min_path: int = 5, max_path: int = 10000) -> bool:
+    def terminate(self, min_path: int = 5, max_path: int = 25000) -> bool:
         assert min_path >= 2
         assert max_path > min_path
         condition = self._termination_condition.get_termination_condition()
@@ -77,7 +77,7 @@ class GetStatistics:
             print(f"WARNING! Maximum number of paths reached: path_count={self.get_path_count()}, max_path={max_path}")
             return True
         elif condition == "CONVERGENCE":
-            return abs(self.get_mean() - self.__prev_running_sum / (self.get_path_count() - 1)) <= criteria
+            return abs(self.get_mean() - self._prev_running_sum / (self.get_path_count() - 1)) <= criteria
         elif condition == "STANDARD_ERROR":
             return abs(self.get_std_err()) <= criteria
         elif condition == "PATH_COUNT":
