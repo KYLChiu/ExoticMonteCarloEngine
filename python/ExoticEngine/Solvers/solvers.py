@@ -95,7 +95,7 @@ class NewtonRaphson(NumericalInversion):
         self,
         func_obj: IV.FunctionObject,
         target: float,
-        start: tuple[float] | float,
+        start: tuple[float],
         tolerance: float = 1e-8,
         max_iteration: int = 30,
     ):
@@ -105,8 +105,7 @@ class NewtonRaphson(NumericalInversion):
             assert isinstance(start, numbers.Number)
             start = (start,)
         super().__init__(func_obj, target, start, tolerance, max_iteration)
-        self._start = self._start[0]
-        assert self._F.f(self._start) and self._F.derivative(self._start)
+        assert self._F.f(self._start[0]) and self._F.derivative(self._start[0])
 
     def solver(self):
         """
@@ -114,11 +113,12 @@ class NewtonRaphson(NumericalInversion):
         f(x) must only take 1 argument
         default max_iteration = 30
         """
-        y = self._F.f(self._start)
+        start = self._start[0]
+        y = self._F.f(start)
         while not self._eval_termination_condition(y):
-            gradient = self._F.derivative(self._start)
+            gradient = self._F.derivative(start)
             # NR algorithm: x_new = x0 + (target - f(x0)) / f'(x0)
-            self._start += (self._target - y) / gradient
-            y = self._F.f(self._start)
+            start += (self._target - y) / gradient
+            y = self._F.f(start)
             self._counter += 1
-        return self._start
+        return start
