@@ -115,12 +115,10 @@ class NewtonRaphson(NumericalInversion):
         default max_iteration = 30
         """
         y = self._F.f(self._start)
-        terminate = self._eval_termination_condition(y)
-        while not terminate:
+        while not self._eval_termination_condition(y):
             gradient = self._F.derivative(self._start)
             # NR algorithm: x_new = x0 + (target - f(x0)) / f'(x0)
             self._start += (self._target - y) / gradient
             y = self._F.f(self._start)
             self._counter += 1
-            terminate = self._eval_termination_condition(y)
         return self._start
