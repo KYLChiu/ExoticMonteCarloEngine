@@ -1,9 +1,10 @@
 import abc
-import numpy as np
 from typing import final
-from ExoticEngine.Statistics import RandomNumberGenerators as RNG
+
+import numpy as np
 
 from ExoticEngine.MarketDataObject import Parameter as P
+from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 
 
 class Model(abc.ABC):
@@ -18,12 +19,15 @@ class Model(abc.ABC):
 
 @final
 class BSModel(Model):
-    def __init__(self, spot: float,
-                 r: P.Parameter,
-                 repo_rate: P.Parameter,
-                 div_yield: P.Parameter,
-                 vol: P.Parameter,
-                 RNG: RNG.RandomBase):
+    def __init__(
+        self,
+        spot: float,
+        r: P.Parameter,
+        repo_rate: P.Parameter,
+        div_yield: P.Parameter,
+        vol: P.Parameter,
+        RNG: RNG.RandomBase,
+    ):
         """
         Assume deterministic parameters, r,q,d,sigma
         Smile captured if local vol
@@ -50,7 +54,16 @@ class BSModel(Model):
         assert t1 >= 0
         dt = t2 - t1
         ito = 0.5 * self._vol.get_root_mean_square(t1, t2) ** 2
-        drift = (self._r.get_mean(t1, t2) - self._q.get_mean(t1, t2) - self._d.get_mean(t1, t2) - ito) * dt
+        drift = (
+            self._r.get_mean(t1, t2)
+            - self._q.get_mean(t1, t2)
+            - self._d.get_mean(t1, t2)
+            - ito
+        ) * dt
         # recall by Ito isometry: Ito integral of f(t) has variance int f(t)^2 dt
-        diffusion = self._vol.get_root_mean_square(t1, t2) * np.sqrt(dt) * self._RNG.get_gaussian()
+        diffusion = (
+            self._vol.get_root_mean_square(t1, t2)
+            * np.sqrt(dt)
+            * self._RNG.get_gaussian()
+        )
         return self._spot * (np.exp(drift + diffusion) - 1)

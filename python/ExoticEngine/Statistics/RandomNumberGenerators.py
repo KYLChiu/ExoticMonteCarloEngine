@@ -1,7 +1,8 @@
 import abc
-import numpy as np
 from enum import Enum
 from typing import final
+
+import numpy as np
 
 
 class RandomNumberType(Enum):
