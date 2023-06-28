@@ -1,12 +1,14 @@
-pytest
+black
+codecov
 coverage
 flake8
-black
-isort
-pytest-cov
-codecov
-mypy
 gitchangelog
+isort
+jupyterlab
 matplotlib
-scipy
+mypy
 numpy
+pandas
+pytest
+pytest - cov
+scipy

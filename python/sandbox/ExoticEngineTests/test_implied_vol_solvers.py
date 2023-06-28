@@ -10,10 +10,10 @@ def test_bisection_solver(tolerance=1e-7):
     quadratic_f = lambda x: 3 * x**2 + 6 + x + 1
     exp_f = lambda x: 2.0 * np.exp(0.5 * x) - 100
     functions = [linear_f, quadratic_f, exp_f]
-    function_objs = [IV.InvertFunction(f_i) for f_i in functions]
+    function_objs = [IV.FunctionObject(f_i) for f_i in functions]
     inputs = [-2000.1, 5.2, -0.5]
     targets = [functions[i](x) for i, x in enumerate(inputs)]
-    bounds = [[-3000, 0], [0, 50], [-10, 100]]
+    bounds = [(-3000, 0), (0, 50), (-10, 100)]
     solver_tolerance = tolerance * 0.9
     assert tolerance > solver_tolerance >= 1e-10
     for i, f in enumerate(function_objs):
@@ -30,13 +30,13 @@ def test_bisection_solver(tolerance=1e-7):
 
 def test_newton_raphson_solver(tolerance=1e-7):
     function_objs = [
-        IV.Polynomial([-24, 4]),
-        IV.Polynomial([-12, 0, 1.2]),
+        IV.Polynomial((-24, 4)),
+        IV.Polynomial((-12, 0, 1.2)),
         IV.Exponential(12, 0.2, -104),
     ]
     inputs = [-2000.1, 5.2, -0.5]
     targets = [function_objs[i].f(x) for i, x in enumerate(inputs)]
-    initial_guesses = [[-5123.42], [212.1], [3.2]]
+    initial_guesses = [(-5123.42), (212.1), (3.2)]
     solver_tolerance = tolerance * 0.9
     assert tolerance > solver_tolerance >= 1e-10
     for i, f in enumerate(function_objs):
@@ -53,12 +53,13 @@ def test_newton_raphson_solver(tolerance=1e-7):
 
 def test_implied_vol_bisection_solver(tolerance=1e-8):
     S, K, T, r, vol = 100, 102, 3.0, 0.02, 0.45
+    CALL, PUT = IV.PUT_CALL("CALL"), IV.PUT_CALL("PUT")
     BS = [
-        IV.BSModel(put_call_flag="CALL", spot=S, strike=K, rate=r, maturity=T),
-        IV.BSModel(put_call_flag="PUT", spot=S, strike=K, rate=r, maturity=T),
+        IV.BSModel(put_call_flag=CALL, spot=S, strike=K, rate=r, maturity=T),
+        IV.BSModel(put_call_flag=PUT, spot=S, strike=K, rate=r, maturity=T),
     ]
     targets = [Pricer.BS_CALL(S, K, T, r, vol), Pricer.BS_PUT(S, K, T, r, vol)]
-    bounds = [1e-5, 3.0]
+    bounds = (1e-5, 3.0)
     solver_tolerance = tolerance * 0.9
     assert tolerance > solver_tolerance >= 1e-10
     for i, model in enumerate(BS):
@@ -75,12 +76,13 @@ def test_implied_vol_bisection_solver(tolerance=1e-8):
 
 def test_implied_vol_newton_raphson_solver(tolerance=1e-8):
     S, K, T, r, vol = 100.0, 92.0, 6.0, 0.031, 0.41
+    CALL, PUT = IV.PUT_CALL("CALL"), IV.PUT_CALL("PUT")
     BS = [
-        IV.BSModel(put_call_flag="CALL", spot=S, strike=K, rate=r, maturity=T),
-        IV.BSModel(put_call_flag="PUT", spot=S, strike=K, rate=r, maturity=T),
+        IV.BSModel(put_call_flag=CALL, spot=S, strike=K, rate=r, maturity=T),
+        IV.BSModel(put_call_flag=PUT, spot=S, strike=K, rate=r, maturity=T),
     ]
     targets = [Pricer.BS_CALL(S, K, T, r, vol), Pricer.BS_PUT(S, K, T, r, vol)]
-    start = [0.1]
+    start = (0.1,)
     solver_tolerance = tolerance * 0.9
     assert tolerance > solver_tolerance >= 1e-10
     for i, model in enumerate(BS):
@@ -92,7 +94,7 @@ def test_implied_vol_newton_raphson_solver(tolerance=1e-8):
 
 
 def test_polynomial():
-    func_objs = [IV.Polynomial([12, -2.0]), IV.Polynomial([0, 0, 2.0])]
+    func_objs = [IV.Polynomial((12, -2.0)), IV.Polynomial((0, 0, 2.0))]
     functions = [(lambda x: -2.0 * x + 12), (lambda x: 2.0 * x**2)]
     derivatives = [(lambda x: -2.0), (lambda x: 4.0 * x)]
     inputs = [-2, 0, 80]

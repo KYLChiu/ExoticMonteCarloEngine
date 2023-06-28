@@ -15,7 +15,7 @@ class PUT_CALL(Enum):
     CALL = "CALL"
 
 
-class InvertFunction:
+class FunctionObject:
     """
     Base class used for functions with 1 parameter
     If f is multidimensional, then need to define derived class
@@ -33,18 +33,20 @@ class InvertFunction:
 
     def derivative(self, x: float):
         """not an abstract method - not all solvers require derivative"""
-        return None
+        raise Exception(
+            "The derivative method needs to be overriden in a subclass if needed"
+        )
 
 
 @final
-class BSModel(InvertFunction):
+class BSModel(FunctionObject):
     """
     No dividend and repo rate
     """
 
     def __init__(
         self,
-        put_call_flag: str,
+        put_call_flag: PUT_CALL,
         spot: float,
         strike: float,
         rate: float,
@@ -54,16 +56,16 @@ class BSModel(InvertFunction):
         self._K = strike
         self._r = rate
         self._T = maturity
-        self._put_call = PUT_CALL(put_call_flag)
+        self._put_call = put_call_flag.value
 
     def f(self, sigma: float) -> float:
-        if self._put_call.value == "PUT":
+        if self._put_call == "PUT":
             return Pricer.BS_PUT(self._S, self._K, self._T, self._r, sigma)
-        elif self._put_call.value == "CALL":
+        elif self._put_call == "CALL":
             return Pricer.BS_CALL(self._S, self._K, self._T, self._r, sigma)
         else:
             raise Exception(
-                f"This is impossible: check put_call_flag: {self._put_call.value}"
+                f"This is impossible: check put_call_flag: {self._put_call}"
             )
 
     def derivative(self, sigma: float) -> float:
@@ -75,10 +77,10 @@ class BSModel(InvertFunction):
 
 
 @final
-class Polynomial(InvertFunction):
-    def __init__(self, coefficients: list[float]):
+class Polynomial(FunctionObject):
+    def __init__(self, coefficients: tuple[float, int]):
         """
-        Here, we use a list as a container to store our coefficients,
+        Here, we use a tuple to store our coefficients,
         alternatively, we can also use *arg or **kwarg to support variable-length argument list
         see: https://www.geeksforgeeks.org/args-kwargs-python/
         """
@@ -87,6 +89,7 @@ class Polynomial(InvertFunction):
 
     def f(self, x: float) -> float:
         """returns: sum_{i=0} a_i x^i"""
+        # try caching later: @functools.cache
         total = 0
         for i, a_i in enumerate(self._coefficients):
             total += a_i * (x ** float(i))
@@ -95,16 +98,18 @@ class Polynomial(InvertFunction):
     def derivative(self, x: float) -> float:
         """returns: sum_{i=1} (a_i*i) x^(i-1)"""
         if x == 0:
-            return self._coefficients[1]
+            return self._coefficients[1] if len(self._coefficients) >= 2 else 0
         else:
-            total = 0
-            for i, a_i in enumerate(self._coefficients):
-                total += (a_i * float(i)) * (x ** (float(i) - 1))
-            return total
+            # try caching later: @functools.cache
+            return sum(
+                a_i * i * (x ** (i - 1))
+                for i, a_i in enumerate(self._coefficients)
+                if i > 0
+            )
 
 
 @final
-class Exponential(InvertFunction):
+class Exponential(FunctionObject):
     def __init__(self, factor: float, exponent: float, constant: float):
         self._A = factor
         self._k = exponent

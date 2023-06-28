@@ -1,16 +1,16 @@
 import abc
+import numbers
 from typing import final
 
 from ExoticEngine.Solvers import ImpliedVol as IV
 
 
 class NumericalInversion(abc.ABC):
-    @final
     def __init__(
         self,
-        func_obj: IV.InvertFunction,
+        func_obj: IV.FunctionObject,
         target: float,
-        start: list[float],
+        start: tuple[float],
         tolerance: float = 1e-8,
         max_iteration: int = 30,
     ):
@@ -43,13 +43,24 @@ class NumericalInversion(abc.ABC):
 # Bisection can be slow
 @final
 class Bisection(NumericalInversion):
+    def __init__(
+        self,
+        func_obj: IV.FunctionObject,
+        target: float,
+        start: tuple[float],
+        tolerance: float = 1e-8,
+        max_iteration: int = 30,
+    ):
+        assert len(start) == 2
+        super().__init__(func_obj, target, start, tolerance, max_iteration)
+
     def solver(self):
         """
         Assumes f: R -> R is a monotonically increasing function
         f(x) must only take 1 argument
-        default max_iteration = 30 (~1e-9 min tolerance)
+        default max_iteration = 30
+        let n=num_iteration: (upper_n - lower_n)/(upper_0 - lower_0) = 0.5^n
         """
-        assert len(self._start) == 2
         if self._start[0] < self._start[1]:
             lower, upper = self._start[0], self._start[1]
         elif self._start[0] > self._start[1]:
@@ -57,7 +68,7 @@ class Bisection(NumericalInversion):
         else:
             raise Exception(
                 f"Starting bounds cannot be the same: "
-                + f"lower={self._start[0]}, upper={self._start[1]}"
+                f"lower={self._start[0]}, upper={self._start[1]}"
             )
         mid_point = 0.5 * (upper + lower)
         y = self._F.f(mid_point)
@@ -80,22 +91,36 @@ class Bisection(NumericalInversion):
 # but requires first order derivative to be well-defined
 @final
 class NewtonRaphson(NumericalInversion):
+    def __init__(
+        self,
+        func_obj: IV.FunctionObject,
+        target: float,
+        start: tuple[float] | float,
+        tolerance: float = 1e-8,
+        max_iteration: int = 30,
+    ):
+        if type(start) == tuple:
+            assert len(start) == 1
+        else:
+            assert isinstance(start, numbers.Number)
+            start = (start,)
+        super().__init__(func_obj, target, start, tolerance, max_iteration)
+        self._start = self._start[0]
+        assert self._F.f(self._start) and self._F.derivative(self._start)
+
     def solver(self):
         """
         Assumes f: R -> R is a monotonically increasing function
         f(x) must only take 1 argument
         default max_iteration = 30
         """
-        start = self._start[0]
-        assert len(self._start) == 1
-        assert self._F.f(start) and self._F.derivative(start)
-        y = self._F.f(start)
+        y = self._F.f(self._start)
         terminate = self._eval_termination_condition(y)
         while not terminate:
-            gradient = self._F.derivative(start)
+            gradient = self._F.derivative(self._start)
             # NR algorithm: x_new = x0 + (target - f(x0)) / f'(x0)
-            start += (self._target - y) / gradient
-            y = self._F.f(start)
+            self._start += (self._target - y) / gradient
+            y = self._F.f(self._start)
             self._counter += 1
             terminate = self._eval_termination_condition(y)
-        return start
+        return self._start
