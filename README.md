@@ -29,11 +29,6 @@ where $W_t$ is a Wiener process. Simulation of the SDE is done via Euler-Maruyam
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 
 ### Option pricing:
-* [JLo]: [Exotic Monte Carlo Pricer](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/ExoticEngine)
-  * To do: implementation, with reference to [this book](https://www.amazon.co.uk/Patterns-Derivatives-Pricing-Mathematics-Finance/dp/0521721628) by Joshi.
-  * price vanilla options (constant rate & vol): see [unit tests](https://github.com/KYLChiu/the-big-learning-repo/blob/master/python/sandbox/test_pricer.py) and [jupyter notebook](https://github.com/KYLChiu/the-big-learning-repo/blob/master/python/ExoticEngine/VanilliaAnalytics.ipynb)
-  * price path dependent single asset equity options (e.g. Barrier/Asian options)
-  * support local vol and stochastic vol model to capture vol skew (issue raised [here](https://github.com/KYLChiu/the-big-learning-repo/issues/14))
-  * price multi-asset/hybrid exotics (e.g. rainbow option)
-  * support different random numbers (issue raised [here](https://github.com/KYLChiu/the-big-learning-repo/issues/13))
-  * support risks (Greeks) using finite differencing
+* [JLo]: [Exotic Monte Carlo Pricer](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/ExoticEngine): An equity/FX exotic Monte Carlo pricer.
+  * see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
+  * Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/sandbox).
