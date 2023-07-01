@@ -46,9 +46,8 @@ def test_asian_payoff():
     delivery_time = 0.5 * len(spots)
     ref_times = tuple(np.arange(0, delivery_time, 0.5))
     asian = PDO.AsianOption(ref_times, delivery_time, call)
-    flows = PDO.CashFlow(delivery_time, 0)
     assert asian.get_max_number_of_cashflows() == 1
     assert asian.get_possible_cashflow_times()[0] == delivery_time
     assert asian.get_reference_times() == ref_times
-    assert asian.get_cash_flows(spots, (flows,)) == 1
-    assert flows.get_amount() == np.mean(spots) - K
+    assert asian.get_cash_flows(spots)[0].get_amount() == np.mean(spots) - K
+    assert asian.get_cash_flows(spots)[0].get_time() == delivery_time

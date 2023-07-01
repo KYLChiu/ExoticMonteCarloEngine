@@ -18,14 +18,13 @@ class ExoticEngine(abc.ABC):
         self._discounts = []
         for t in cashflow_times:
             self._discounts.append(np.exp(-self._r.get_mean(0, t) * t))
-        self._cash_flows = []
+        self._cash_flows: list[PDO.CashFlow] = []
 
     def run_simulation(self, collector: Stats.GetStatistics, num_paths: int) -> None:
         # keep doing 1 path, until pricer terminate...?
-        spot_values = len(self._product.get_reference_times())  # doesnt work
         for i in range(num_paths):
-            self.run_pathwise_simulation(spot_values)
-            value = self.get_pathwise_discounted_flow(spot_values)
+            simulated_spot = self.run_pathwise_simulation()
+            value = self.get_pathwise_discounted_flow(simulated_spot)
             collector.add_one_result(value)
 
     @abc.abstractmethod
@@ -33,8 +32,8 @@ class ExoticEngine(abc.ABC):
         """This is an abstract method: dynamics is model dependent"""
         pass
 
-    def get_pathwise_discounted_flow(self, spot_values: tuple[float]):
-        num_flows = self._product.get_cash_flows(spot_values, self._cash_flows)
+    def get_pathwise_discounted_flow(self, simulated_spot: tuple[float]):
+        num_flows = self._product.get_cash_flows(simulated_spot)
         total_discounted_flows = 0
         # I am sure there is a more Pythonic way of doing this running sum
         for i, cf in enumerate(self._cash_flows):
