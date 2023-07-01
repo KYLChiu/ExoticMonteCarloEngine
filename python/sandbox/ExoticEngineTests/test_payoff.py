@@ -1,4 +1,7 @@
+import numpy as np
+
 from ExoticEngine.Payoff import Options as O
+from ExoticEngine.Payoff import PathDependentOptions as PDO
 
 
 def test_call_payoff():
@@ -34,3 +37,18 @@ def test_option_expiry():
     expiry = 5.0
     call_option = O.VanillaOption(call, expiry)
     assert call_option.get_expiry() == expiry
+
+
+def test_asian_payoff():
+    K = 100.0
+    spots = tuple(i**2 for i in np.arange(0, 21))
+    call = O.PayOffCall(strike=K)
+    delivery_time = 0.5 * len(spots)
+    ref_times = tuple(np.arange(0, delivery_time, 0.5))
+    asian = PDO.AsianOption(ref_times, delivery_time, call)
+    flows = PDO.CashFlow(delivery_time, 0)
+    assert asian.get_max_number_of_cashflows() == 1
+    assert asian.get_possible_cashflow_times()[0] == delivery_time
+    assert asian.get_reference_times() == ref_times
+    assert asian.get_cash_flows(spots, (flows,)) == 1
+    assert flows.get_amount() == np.mean(spots) - K

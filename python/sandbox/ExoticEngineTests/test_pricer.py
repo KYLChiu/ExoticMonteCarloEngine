@@ -3,6 +3,7 @@ import numpy as np
 from ExoticEngine import MonteCarloPricer as Pricer
 from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
 from ExoticEngine.Payoff import Options as O
+from ExoticEngine.Statistics import RandomNumberGenerators as RNG
 from sandbox.ExoticEngineTests import pricer_helper as helper
 
 
@@ -12,7 +13,7 @@ def test_vanilla_put_pricer_zero_rate_zero_vol():
     pay_off = O.PayOffPut(strike=K)
     option = O.VanillaOption(pay_off, expiry=T)
     param_dict = helper.build_constant_market_param(0, 0, 0, 0)
-    RNGenerator = helper.build_RNG("PSEUDO_RANDOM")
+    RNGenerator = RNG.TestRandom(1)
     prices = [10, 1, 0, 0]
     for i, S in enumerate(spots):
         EqModel = Sim.BSModel(
@@ -42,7 +43,7 @@ def test_vanilla_call_pricer_zero_vol(tolerance=1e-8):
     param_dict = helper.build_constant_market_param(
         rate=0.05, vol=0.0, repo=0.02, div=0.01
     )
-    RNGenerator = helper.build_RNG("PSEUDO_RANDOM")
+    RNGenerator = RNG.TestRandom(1)
     discount_factor_r = np.exp(-param_dict["Rate"].get_mean(0, maturity) * maturity)
     discount_factor_q = np.exp(-param_dict["Repo"].get_mean(0, maturity) * maturity)
     discount_factor_d = np.exp(-param_dict["Div"].get_mean(0, maturity) * maturity)

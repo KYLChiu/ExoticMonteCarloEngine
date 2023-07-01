@@ -30,7 +30,7 @@ def vanilla_mc_pricer(
     expiry = option.get_expiry()
     # create a deepy copy to avoid side effects...python passes arg by assignment (reference)
     collector = copy.deepcopy(result_collector)  # not sure if memory efficient
-    discount_factor = np.exp(-rate.get_mean(0.0, expiry) * expiry)
+    discount_factor = np.exp(-rate.get_integral(0.0, expiry))
     terminate = False
     spot_t0 = sim_model.get_day0()
     while not terminate:
