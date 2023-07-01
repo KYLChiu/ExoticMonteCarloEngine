@@ -73,7 +73,7 @@ def test_vanilla_call_pricer_zero_vol(tolerance=1e-8):
         assert results.get_path_count() == num_path
 
 
-def test_asian_pricer_zero_vol(tolerance=1e-8):
+def test_asian_pricer_zero_vol(tolerance=1e-9):
     K = 90
     num_stopping_dates = 9
     ref_times = tuple(i for i in range(num_stopping_dates))
@@ -112,9 +112,8 @@ def test_asian_pricer_zero_vol(tolerance=1e-8):
         for i in range(num_stopping_dates - 1):
             new_spot *= np.exp(effective_growths[i])
             expected_spots.append(new_spot)
-        ave_spot = np.mean(expected_spots)
         discounted_payoff = np.exp(
             -param_dict["Rate"].get_integral(0, delivery_time)
-        ) * (max(ave_spot - K, 0))
+        ) * (max(np.mean(expected_spots) - K, 0))
         assert abs(result.get_mean() - discounted_payoff) < tolerance
         assert abs(result.get_std_err()) < tolerance
