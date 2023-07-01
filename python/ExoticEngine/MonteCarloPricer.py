@@ -4,8 +4,10 @@ import numpy as np
 from scipy.stats import norm
 
 from ExoticEngine.MarketDataObject import Parameter as P
+from ExoticEngine.MonteCarloEngine import ExoticEngine as EE
 from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
 from ExoticEngine.Payoff import Options as O
+from ExoticEngine.Payoff import PathDependentOptions as PDO
 from ExoticEngine.Statistics import Statistics as Stats
 
 
@@ -40,3 +42,14 @@ def vanilla_mc_pricer(
         collector.add_one_result(discounted_payoff)
         terminate = collector.terminate()
     return collector
+
+
+def path_dependent_mc_pricer(
+    sim_engine: EE.ExoticEngine, path_count: int = 1000
+) -> Stats.GetStatistics:
+    # support different termination condition later!
+    termination = Stats.ConditionType("PATH_COUNT")
+    condition = Stats.TerminationCondition(termination, path_count)
+    result_collector = Stats.GetStatistics(condition)
+    sim_engine.run_simulation(result_collector, path_count)
+    return result_collector
