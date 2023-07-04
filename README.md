@@ -19,11 +19,9 @@ Learning stuff in cpp and python. Contributions are welcome!
   * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/future_chainer_test.cpp)
 
 ### Option pricing:
-* [KC] [**monte_carlo_engine**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/cuda/first_order_sde.cuh): a naive implementation of multi-threaded MC for first-order (deterministic coefficient) SDEs:
-$$dX_t = \mu(X_t, t) dt + \sigma(X_t, t) dW_t$$
-where $W_t$ is a Wiener process. Simulation of the SDE is done via Euler-Maruyama stepping.
-  * To do: implement CUDA equivalent, add Milstein stepping, improve sampling.
-  * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/cuda_test.cu).
+* [KC] [**monte_carlo_pricer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/cuda/monte_carlo_pricer.cuh): a Monte Carlo pricer implemented in CUDA/multi-threaded C++.
+  * To do: improving stepping methods, sampling methods,
+  * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu).
 
 ## python
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
