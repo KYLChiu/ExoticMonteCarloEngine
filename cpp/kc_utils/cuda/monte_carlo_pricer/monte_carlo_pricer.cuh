@@ -8,12 +8,7 @@
 #include <thrust/device_ptr.h>
 #include <thrust/device_vector.h>
 #include <thrust/execution_policy.h>
-#include <thrust/random.h>
-#include <execution>
-#include <functional>
-#include <future>
 #include <memory>
-#include <random>
 #include <thread>
 #include "dispatch_type.hpp"
 #include "model/model.cuh"

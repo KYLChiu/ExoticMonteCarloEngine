@@ -1,8 +1,9 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include <thrust/device_malloc.h>
 #include <thrust/device_ptr.h>
+#include <thrust/random.h>
+#include <memory>
 #include "simulater.cuh"
 
 namespace kcu::mc {

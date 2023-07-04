@@ -1,10 +1,7 @@
-#include <cuda_runtime.h>
 #include <gtest/gtest.h>
 #include <stdio.h>
-#include <algorithm>
 #include <cmath>
-#include <execution>
-#include <ranges>
+#include <type_traits>
 #include "kc_utils/cuda/monte_carlo_pricer/model/black_scholes.cuh"
 #include "kc_utils/cuda/monte_carlo_pricer/monte_carlo_pricer.cuh"
 #include "kc_utils/cuda/monte_carlo_pricer/option/vanilla_call.cuh"
@@ -52,13 +49,13 @@ void run_test() {
         auto price = pricer.run(option, simulater, model, T);
         EXPECT_TRUE(
             std::abs(price - analytical_call_price(S_0, K, r, sigma, T)) <
-            static_cast<double>(1e-1));
+            static_cast<double>(1e-2));
     } else {
         auto option = std::make_shared<vanilla_put>(K);
         auto price = pricer.run(option, simulater, model, T);
         EXPECT_TRUE(
             std::abs(price - analytical_put_price(S_0, K, r, sigma, T)) <
-            static_cast<double>(1e-1));
+            static_cast<double>(1e-2));
     }
 }
 
