@@ -21,7 +21,7 @@ if(CMAKE_CUDA_COMPILER)
     set(CMAKE_CUDA_STANDARD 17)
     set(CMAKE_CUDA_STANDARD_REQUIRED ON)
   enable_language(CUDA)
-  set(CMAKE_CUDA_FLAGS "--extended-lambda --expt-relaxed-constexpr -O3")
+  set(CMAKE_CUDA_FLAGS "--extended-lambda --expt-relaxed-constexpr")
   endif()
 endif()
 
