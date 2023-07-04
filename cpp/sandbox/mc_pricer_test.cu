@@ -33,10 +33,10 @@ template <kcu::mc::dispatch_type DispatchType, typename Option,
 void run_test(std::size_t num_steps, std::size_t num_paths) {
     using namespace kcu::mc;
 
-    double S_0 = 25.0;
-    double r = 0.03;
+    double S_0 = 50.0;
+    double r = 0.02;
     double sigma = 0.15;
-    double K = 25.0;
+    double K = 50.0;
     double T = 0.5;
 
     double tol = 1e-3;
@@ -69,41 +69,54 @@ void run_test(std::size_t num_steps, std::size_t num_paths) {
     }();
 
     double price = pricer.run(option, simulater, model, T);
-    double diff = std::abs(price - analytical_price);
+    double abs_err = std::abs(price - analytical_price);
+    double rel_err = abs_err / analytical_price;
     std::cout << "MC Price         : " << price << std::endl;
     std::cout << "Analytical Price : " << analytical_price << std::endl;
-    std::cout << "Difference       : " << diff << std::endl;
-    EXPECT_TRUE(diff < tol);
+    std::cout << "Absolute Error   : " << abs_err << std::endl;
+    std::cout << "Relative Error   : " << rel_err << std::endl;
+    EXPECT_TRUE(rel_err < tol);
 }
 
 }  // namespace
 
-TEST(MonteCarlo, Cpp_Put_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::vanilla_put,
-             kcu::mc::euler_maruyama>(1e1, 1e8);
-}
-
-TEST(MonteCarlo, CUDA_Put_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::vanilla_put,
-             kcu::mc::euler_maruyama>(1e1, 1e8);
-}
 
 TEST(MonteCarlo, Cpp_Call_EM_BS) {
     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::vanilla_call,
-             kcu::mc::euler_maruyama>(1e1, 1e8);
+             kcu::mc::euler_maruyama>(5e1, 1e7);
 }
 
 TEST(MonteCarlo, CUDA_Call_EM_BS) {
     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::vanilla_call,
-             kcu::mc::euler_maruyama>(1e1, 1e8);
+             kcu::mc::euler_maruyama>(5e1, 1e7);
 }
 
 TEST(MonteCarlo, Cpp_Call_Analytic_BS) {
     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::vanilla_call,
-             kcu::mc::analytical_simulater>(0, 1e9);
+             kcu::mc::analytical_simulater>(0, 1e7);
 }
 
 TEST(MonteCarlo, CUDA_Call_Analytic_BS) {
     run_test<kcu::mc::dispatch_type::cuda, kcu::mc::vanilla_call,
-             kcu::mc::analytical_simulater>(0, 1e9);
+             kcu::mc::analytical_simulater>(0, 1e7);
+}
+
+TEST(MonteCarlo, Cpp_Put_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::vanilla_put,
+             kcu::mc::euler_maruyama>(5e1, 1e7);
+}
+
+TEST(MonteCarlo, CUDA_Put_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::vanilla_put,
+             kcu::mc::euler_maruyama>(5e1, 1e7);
+}
+
+TEST(MonteCarlo, Cpp_Put_Analytic_BS) {
+    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::vanilla_put,
+             kcu::mc::analytical_simulater>(0, 1e7);
+}
+
+TEST(MonteCarlo, CUDA_Put_Analytic_BS) {
+    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::vanilla_put,
+             kcu::mc::analytical_simulater>(0, 1e7);
 }

@@ -19,7 +19,6 @@ namespace kcu::mc {
 
 template <dispatch_type DispatchType>
 class monte_carlo_pricer final {
-   private:
    public:
     monte_carlo_pricer(std::size_t num_paths) : num_paths_(num_paths) {}
 
@@ -31,8 +30,7 @@ class monte_carlo_pricer final {
             std::vector<std::thread> ts;
             ts.reserve(num_threads);
 
-            // Store the number of simulations per thread, the remainder goes to
-            // the last thread.
+            // Store the number of simulations per thread.
             std::vector<std::size_t> num_sims(num_threads,
                                               num_paths_ / num_threads);
             num_sims[num_sims.size() - 1] += num_paths_ % num_threads;
@@ -43,8 +41,8 @@ class monte_carlo_pricer final {
                 auto sims = num_sims[thread_id];
                 auto seed = sims * thread_id;
                 for (std::size_t j = 0; j < sims; ++j) {
-                    auto S = sim->simulate_cpp(mdl, seed++);
-                    thread_res[thread_id].value_ += opt->payoff(S);
+                    thread_res[thread_id].value_ +=
+                        sim->simulate_cpp(opt, mdl, seed++);
                 }
             };
 
@@ -78,8 +76,7 @@ class monte_carlo_pricer final {
             auto sum = thrust::transform_reduce(
                 thrust::device, input.begin(), input.end(),
                 [opt_d, sim_d, mdl_d] __device__(double idx) {
-                    auto S = sim_d->simulate_cuda(mdl_d, idx);
-                    return opt_d->payoff(S);
+                    return sim_d->simulate_cuda(opt_d, mdl_d, idx);
                 },
                 0.0, thrust::plus<double>());
 
