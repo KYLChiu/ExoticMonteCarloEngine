@@ -25,8 +25,15 @@ enum class dispatch_type { cpp, cuda };
 
 template <dispatch_type DispatchType>
 class monte_carlo_pricer final {
+    private:
+    alignas(64) struct aligned_double {
+        aligned_double(double value) : value_(value) {}
+        double value_;
+    };
+
    public:
     monte_carlo_pricer(std::size_t num_paths) : num_paths_(num_paths) {}
+
 
     template <typename Option, typename Simulater, typename Model>
     inline double run(const Option& opt, const Simulater& sim, const Model& mdl,
@@ -38,17 +45,17 @@ class monte_carlo_pricer final {
 
             std::vector<std::size_t> num_sims_per_thread(
                 num_threads, num_paths_ / num_threads);
-            num_sims_per_thread[0] += num_paths_ % num_threads;
+            num_sims_per_thread[num_sims_per_thread.size() - 1] += num_paths_ % num_threads;
 
-            std::vector<double> thread_res(num_threads, 0.0);
+            std::vector<aligned_double> thread_res(num_threads, 0.0);
             for (std::size_t i = 0; i < num_threads; ++i) {
                 auto t = std::thread(
                     [&](std::size_t thread_id) {
+                        auto seed = 0;
                         for (std::size_t j = 0;
                              j < num_sims_per_thread[thread_id]; ++j) {
-                            // TODO: Watch overflow here.
-                            thread_res[thread_id] += opt.payoff(
-                                sim.simulate_cpp(mdl, (thread_id + 1) * j));
+                            thread_res[thread_id].value_ += opt.payoff(
+                                sim.simulate_cpp(mdl, seed++ + num_sims_per_thread[thread_id] * thread_id));
                         }
                     },
                     i);
@@ -60,7 +67,7 @@ class monte_carlo_pricer final {
 
             double sum = 0.0;
             for (const auto& res : thread_res) {
-                sum += res;
+                sum += res.value_;
             }
             return mdl.discount_factor(T) * sum / num_paths_;
         } else {

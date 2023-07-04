@@ -45,7 +45,7 @@ TEST(CUDA, BlackScholesCallCpp) {
     kcu::mc::vanilla_call option(K);
     kcu::mc::euler_maruyama simulater(50, T);
 
-    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e7);
+    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e8);
     auto price = pricer.run(option, simulater, model, T);
 
     EXPECT_TRUE(std::abs(price - analytical_call_price(S_0, K, r, sigma, T)) <
@@ -65,7 +65,7 @@ TEST(CUDA, BlackScholesCallCUDA) {
     kcu::mc::vanilla_call option(K);
     kcu::mc::euler_maruyama simulater(50, T);
 
-    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e7);
+    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e8);
     auto price = pricer.run(option, simulater, model, T);
 
     EXPECT_TRUE(std::abs(price - analytical_call_price(S_0, K, r, sigma, T)) <
@@ -85,11 +85,11 @@ TEST(CUDA, BlackScholesPutCpp) {
     kcu::mc::vanilla_put option(K);
     kcu::mc::euler_maruyama simulater(50, T);
 
-    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e7);
+    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e8);
     auto price = pricer.run(option, simulater, model, T);
 
     EXPECT_TRUE(std::abs(price - analytical_put_price(S_0, K, r, sigma, T)) <
-                static_cast<double>(1e-1));
+                static_cast<double>(1e-2));
 }
 
 TEST(CUDA, BlackScholesPutCUDA) {
@@ -105,7 +105,7 @@ TEST(CUDA, BlackScholesPutCUDA) {
     kcu::mc::vanilla_put option(K);
     kcu::mc::euler_maruyama simulater(50, T);
 
-    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e7);
+    auto pricer = kcu::mc::monte_carlo_pricer<type>(1e8);
     auto price = pricer.run(option, simulater, model, T);
 
     EXPECT_TRUE(std::abs(price - analytical_put_price(S_0, K, r, sigma, T)) <
