@@ -1,9 +1,9 @@
 #pragma once
 
 /* A Monte Carlo Pricer implemented using:
-* - CUDA (via Thrust) 
-* - C++ (multi-threaded). 
-*/
+ * - CUDA (via Thrust)
+ * - C++ (multi-threaded).
+ */
 
 #include <thrust/device_ptr.h>
 #include <thrust/device_vector.h>

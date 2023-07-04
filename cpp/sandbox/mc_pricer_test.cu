@@ -5,10 +5,10 @@
 #include <cmath>
 #include <execution>
 #include <ranges>
-#include "kc_utils/cuda/monte_carlo_pricer/option/vanilla_put.cuh"
 #include "kc_utils/cuda/monte_carlo_pricer/model/black_scholes.cuh"
 #include "kc_utils/cuda/monte_carlo_pricer/monte_carlo_pricer.cuh"
 #include "kc_utils/cuda/monte_carlo_pricer/option/vanilla_call.cuh"
+#include "kc_utils/cuda/monte_carlo_pricer/option/vanilla_put.cuh"
 #include "kc_utils/cuda/monte_carlo_pricer/simulater/euler_maruyama.cuh"
 
 namespace {
