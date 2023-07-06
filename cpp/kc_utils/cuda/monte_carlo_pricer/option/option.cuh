@@ -4,15 +4,14 @@
 
 namespace kcu::mc {
 
-/* -- OPTION --
-Represents an option. Requires a payoff.
-*/
-
 template <typename Derived>
 class option {
    public:
-    __host__ __device__ double payoff(double S) const {
-        return static_cast<const Derived*>(this)->payoff_impl(S);
+    template <typename... Args>
+    __host__ __device__ double payoff(Args&&... args) const {
+        return static_cast<const Derived*>(this)->payoff_impl(
+            std::forward<Args>(args)...);
     }
 };
+
 }  // namespace kcu::mc
