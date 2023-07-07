@@ -47,15 +47,15 @@ double analytical_geom_asian_call_price(double S, double K, double r, double v,
 
 double analytical_down_and_out_call_price(double S, double K, double r,
                                           double v, double T, double barrier) {
-    double nu = r - 0.5 * v * v;
+    double alpha = -r / (v * v) + 0.5;
     return analytical_euro_call_price(S, K, r, v, T) -
-           pow(barrier / S, 2 * nu / (v * v)) *
+           pow(barrier / S, 2 * alpha) *
                analytical_euro_call_price(barrier * barrier / S, K, r, v, T);
 }
 
 template <kcu::mc::dispatch_type DispatchType, typename Option,
           typename Simulater>
-void run_test(std::size_t num_steps = 50, std::size_t num_paths = 1e6,
+void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
               std::size_t num_options = 1) {
     using namespace kcu::mc;
     using std::chrono::duration;
@@ -65,11 +65,11 @@ void run_test(std::size_t num_steps = 50, std::size_t num_paths = 1e6,
 
     double S_0 = 50.0;
     double r = 0.03;
-    double sigma = 0.30;
+    double sigma = 0.15;
     double K = 50.0;
-    double T = 0.5;
+    double T = 1.0;
     std::size_t periods = 15;  // for Asian option
-    double barrier = K - 2;    // for Barriers
+    double barrier = K - 15;   // for Barriers
 
     double tol = 1e-1;
 
@@ -153,52 +153,50 @@ TEST(MonteCarlo, Cpp_EuropeanCall_Analytic_BS) {
              kcu::mc::analytical_simulater>();
 }
 
-// TEST(MonteCarlo, CUDA_EuropeanCall_Analytic_BS) {
-//     run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_call,
-//              kcu::mc::analytical_simulater>();
-// }
+TEST(MonteCarlo, CUDA_EuropeanCall_Analytic_BS) {
+    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_call,
+             kcu::mc::analytical_simulater>();
+}
 
-// TEST(MonteCarlo, Cpp_EuropeanCall_EM_BS) {
-//     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
-//              kcu::mc::euler_maruyama>();
-// }
+TEST(MonteCarlo, Cpp_EuropeanCall_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
+             kcu::mc::euler_maruyama>();
+}
 
-// TEST(MonteCarlo, CUDA_EuropeanCall_EM_BS) {
-//     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
-//              kcu::mc::euler_maruyama>();
-// }
+TEST(MonteCarlo, CUDA_EuropeanCall_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
+             kcu::mc::euler_maruyama>();
+}
 
-// TEST(MonteCarlo, Cpp_Put_EuropeanPut_Analytic_BS) {
-//     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_put,
-//              kcu::mc::analytical_simulater>();
-// }
+TEST(MonteCarlo, Cpp_Put_EuropeanPut_Analytic_BS) {
+    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_put,
+             kcu::mc::analytical_simulater>();
+}
 
-// TEST(MonteCarlo, CUDA_EuropeanPut_Analytic_BS) {
-//     run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_put,
-//              kcu::mc::analytical_simulater>();
-// }
+TEST(MonteCarlo, CUDA_EuropeanPut_Analytic_BS) {
+    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_put,
+             kcu::mc::analytical_simulater>();
+}
 
-// TEST(MonteCarlo, Cpp_EuropeanPut_EM_BS) {
-//     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_put,
-//              kcu::mc::euler_maruyama>();
-// }
+TEST(MonteCarlo, Cpp_EuropeanPut_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_put,
+             kcu::mc::euler_maruyama>();
+}
 
-// TEST(MonteCarlo, CUDA_EuropeanPut_EM_BS) {
-//     run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_put,
-//              kcu::mc::euler_maruyama>();
-// }
+TEST(MonteCarlo, CUDA_EuropeanPut_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_put,
+             kcu::mc::euler_maruyama>();
+}
 
-// TEST(MonteCarlo, Cpp_GeometricAsianCall_EM_BS) {
-//     run_test<kcu::mc::dispatch_type::cpp,
-//              kcu::mc::discrete_geometric_asian_call,
-//              kcu::mc::euler_maruyama>();
-// }
+TEST(MonteCarlo, Cpp_GeometricAsianCall_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cpp,
+             kcu::mc::discrete_geometric_asian_call, kcu::mc::euler_maruyama>();
+}
 
-// TEST(MonteCarlo, CUDA_GeometricAsianCall_EM_BS) {
-//     run_test<kcu::mc::dispatch_type::cuda,
-//              kcu::mc::discrete_geometric_asian_call,
-//              kcu::mc::euler_maruyama>();
-// }
+TEST(MonteCarlo, CUDA_GeometricAsianCall_EM_BS) {
+    run_test<kcu::mc::dispatch_type::cuda,
+             kcu::mc::discrete_geometric_asian_call, kcu::mc::euler_maruyama>();
+}
 
 TEST(MonteCarlo, Cpp_DownAndOutCall_EM_BS) {
     run_test<kcu::mc::dispatch_type::cpp, kcu::mc::down_and_out_call,

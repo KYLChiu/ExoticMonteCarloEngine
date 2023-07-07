@@ -10,6 +10,26 @@
 
 namespace kcu::mc {
 
+namespace detail {
+
+    __host__ __device__ std::size_t greatest_common_divisor(std::size_t a,
+                                                            std::size_t b) {
+        while (b != 0) {
+            std::size_t temp = b;
+            b = a % b;
+            a = temp;
+        }
+        return a;
+    }
+
+    __host__ __device__ std::size_t lowest_common_multiple(std::size_t a,
+                                                           std::size_t b) {
+        std::size_t gcd = greatest_common_divisor(a, b);
+        return (a / gcd) * b;
+    }
+
+}  // namespace detail
+
 class euler_maruyama : public simulater<euler_maruyama> {
     friend class simulater<euler_maruyama>;
 
@@ -39,7 +59,6 @@ class euler_maruyama : public simulater<euler_maruyama> {
 #pragma nv_diag_suppress 20014
 
         using option_t = std::decay_t<decltype(*option.get())>;
-
         thrust::default_random_engine rng(rng_seed);
 
         // Antithetic variates
@@ -50,9 +69,9 @@ class euler_maruyama : public simulater<euler_maruyama> {
         if constexpr (std::is_base_of_v<path_dependent_option<option_t>,
                                         option_t>) {
             std::size_t periods = option->periods();
-
-            // TODO: use LCM here.
-            std::size_t num_steps = periods * num_steps_;
+            std::size_t num_steps =
+                detail::lowest_common_multiple(num_steps_, periods);
+            std::size_t period = num_steps / periods;
             double dt = T_ / num_steps;
             double std_dev = sqrtf(dt);
 
@@ -69,9 +88,8 @@ class euler_maruyama : public simulater<euler_maruyama> {
                 X_ta = X_ta + model->drift(X_ta, t) * dt -
                        model->diffusion(X_ta, t) * dW_t;
                 t += dt;
-                if (i % num_steps_ == 0) {
+                if (i % period == 0) {
                     X_ts[idx] = X_t;
-                    // printf("%f, %u, %f\n", t, i, X_ts[idx]);
                     X_tas[idx++] = X_ta;
                 }
             }

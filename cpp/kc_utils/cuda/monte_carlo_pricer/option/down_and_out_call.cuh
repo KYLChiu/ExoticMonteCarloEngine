@@ -13,7 +13,10 @@ class down_and_out_call final
 
    public:
     __host__ __device__ down_and_out_call(double K, double barrier)
-        : K_(K), barrier_(barrier), base_t(50) /*this needs to be rethought*/{}
+        : K_(K),
+          barrier_(barrier),
+          base_t(3e2)
+    {}
 
    private:
     __host__ __device__ double payoff_impl(double* spots) const {
