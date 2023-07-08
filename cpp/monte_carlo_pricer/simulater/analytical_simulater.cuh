@@ -56,7 +56,8 @@ class analytical_simulater : public simulater<analytical_simulater> {
         double r = model->r();
         double sigma = model->sigma();
         double W_T = dist(rng);
-        // Antithetic variates: https://en.wikipedia.org/wiki/Antithetic_variates
+        // Antithetic variates:
+        // https://en.wikipedia.org/wiki/Antithetic_variates
         double drift = (r - sigma * sigma / 2.0) * T_;
         double diffusion = sigma * W_T;
         double common = S_0 * exp(drift);

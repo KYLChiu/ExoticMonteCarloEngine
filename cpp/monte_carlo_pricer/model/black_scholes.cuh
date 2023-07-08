@@ -9,7 +9,8 @@ class black_scholes final : public model<black_scholes> {
     friend class model<black_scholes>;
 
    public:
-    /* dS_t = rS_t dt + sigma S_t dW_t */
+    // dS_t = rS_t dt + sigma S_t dW_t
+    // https://en.wikipedia.org/wiki/Geometric_Brownian_motion
     __host__ __device__ black_scholes(double S_0 /*initial value*/,
                                       double r /*risk-free rate*/,
                                       double sigma /*volatility*/)

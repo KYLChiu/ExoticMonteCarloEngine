@@ -6,6 +6,7 @@
 
 namespace emce {
 
+// https://en.wikipedia.org/wiki/Barrier_option
 class down_and_out_call final
     : public path_dependent_option<down_and_out_call> {
     using base_t = path_dependent_option<down_and_out_call>;

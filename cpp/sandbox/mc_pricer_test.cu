@@ -53,8 +53,7 @@ double analytical_down_and_out_call_price(double S, double K, double r,
                analytical_euro_call_price(barrier * barrier / S, K, r, v, T);
 }
 
-template <emce::dispatch_type DispatchType, typename Option,
-          typename Simulater>
+template <emce::dispatch_type DispatchType, typename Option, typename Simulater>
 void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
               std::size_t num_options = 1) {
     using namespace emce;
@@ -191,13 +190,13 @@ TEST(MonteCarlo, CUDA_EuropeanPut_EM_BS) {
 }
 
 TEST(MonteCarlo, Cpp_GeometricAsianCall_EM_BS) {
-    run_test<emce::dispatch_type::cpp,
-             emce::discrete_geometric_asian_call, emce::euler_maruyama>();
+    run_test<emce::dispatch_type::cpp, emce::discrete_geometric_asian_call,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, CUDA_GeometricAsianCall_EM_BS) {
-    run_test<emce::dispatch_type::cuda,
-             emce::discrete_geometric_asian_call, emce::euler_maruyama>();
+    run_test<emce::dispatch_type::cuda, emce::discrete_geometric_asian_call,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, Cpp_DownAndOutCall_EM_BS) {

@@ -5,6 +5,7 @@
 
 namespace emce {
 
+// https://en.wikipedia.org/wiki/Put_option
 class european_put : public option<european_put> {
     friend class option<european_put>;
 

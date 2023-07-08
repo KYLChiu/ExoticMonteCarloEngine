@@ -4,6 +4,8 @@
 
 namespace emce {
 
+// Class to hold payoffs. The arguments are variadic to support different
+// path dependent versus terminal payoffs.
 template <typename Derived>
 class option {
    public:

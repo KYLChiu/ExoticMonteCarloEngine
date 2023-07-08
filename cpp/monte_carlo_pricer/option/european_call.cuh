@@ -5,6 +5,7 @@
 
 namespace emce {
 
+// https://en.wikipedia.org/wiki/Call_option
 class european_call : public option<european_call> {
     friend class option<european_call>;
 

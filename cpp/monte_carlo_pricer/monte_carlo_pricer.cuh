@@ -87,11 +87,12 @@ class monte_carlo_pricer final {
 
         std::vector<aligned_double> thread_res(num_threads, 0.0);
 
-        // Each thread gets num_paths_ / num_threads, except the last one which gets num_paths_ / num_threads + num_paths_ % num_threads
+        // Each thread gets num_paths_ / num_threads, except the last one which
+        // gets num_paths_ / num_threads + num_paths_ % num_threads.
         auto work = [&](std::size_t thread_id) {
             std::size_t sims = num_paths_ / num_threads;
             std::size_t seed = sims * thread_id;
-            
+
             if (thread_id == num_threads - 1) {
                 sims += num_paths_ % num_threads;
             }
@@ -109,12 +110,15 @@ class monte_carlo_pricer final {
             t.join();
         }
 
-        double sum = 0.0;
-        for (const auto& res : thread_res) {
-            sum += res.value_;
-        }
+        auto sum_of_paths = [&]() {
+            double sum = 0.0;
+            for (auto& res : thread_res) {
+                sum += res.value_;
+            }
+            return sum;
+        }();
 
-        return mdl->discount_factor(T) * sum / num_paths_;
+        return mdl->discount_factor(T) * sum_of_paths / num_paths_;
     }
 
     template <typename Option, typename Simulater, typename Model>

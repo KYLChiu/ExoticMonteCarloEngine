@@ -1,7 +1,7 @@
 # EMCE - Exotic Monte Carlo Engine
-Monte Carlo pricers for exotic derivaities in both Python / C++. The reason to code it up in two languages: 
-* Both are languages commonly used in quantitative finance - implementing a solution in both languages provides a holistic way to learn the intracicies of both languages from bottom-up.
-* The languages themselves boast different benefits - Python (usually) provides a quicker and smoother development cycle where C++ provides the raw speed where there is demand for performance.
+Monte Carlo pricers for exotic derivatives in both Python / C++. The reason to code it up in two languages: 
+* Both are languages commonly used in quantitative finance - implementing a solution in both languages provides a holistic way to learn the intracicies of both languages from bottom-up through comparison.
+* The languages themselves boast different benefits - Python allows for a quicker development cycle where C++ provides the raw speed where there is demand for performance.
 
 Contributions are *more* than welcome!
 

@@ -11,9 +11,9 @@ class path_dependent_option : public option<Derived> {
     friend class option<Derived>;
 
    public:
-    __host__ __device__ constexpr std::size_t periods() const {
-        return periods_;
-    }
+    // Number of monitoring periods (Asian options)
+    // Number of spots to check against the barrier (barriers)
+    __host__ __device__ std::size_t periods() const { return periods_; }
 
    protected:
     __host__ __device__ path_dependent_option(std::size_t periods)
