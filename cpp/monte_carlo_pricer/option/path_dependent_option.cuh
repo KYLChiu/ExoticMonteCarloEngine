@@ -4,7 +4,7 @@
 #include <cuda_runtime.h>
 #include "option.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 template <typename Derived>
 class path_dependent_option : public option<Derived> {
@@ -25,4 +25,4 @@ class path_dependent_option : public option<Derived> {
     std::size_t periods_;
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

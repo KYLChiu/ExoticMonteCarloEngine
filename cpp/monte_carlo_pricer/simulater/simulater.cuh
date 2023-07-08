@@ -4,7 +4,7 @@
 #include <thrust/device_ptr.h>
 #include <memory>
 
-namespace kcu::mc {
+namespace emce {
 
 template <typename Derived>
 class simulater {
@@ -26,4 +26,4 @@ class simulater {
     }
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

@@ -4,7 +4,7 @@
 #include "option.cuh"
 #include "path_dependent_option.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 class down_and_out_call final
     : public path_dependent_option<down_and_out_call> {
@@ -15,8 +15,7 @@ class down_and_out_call final
     __host__ __device__ down_and_out_call(double K, double barrier)
         : K_(K),
           barrier_(barrier),
-          base_t(3e2)
-    {}
+          base_t(1e3 /* this needs to be thought through better */) {}
 
    private:
     __host__ __device__ double payoff_impl(double* spots) const {
@@ -33,4 +32,4 @@ class down_and_out_call final
     double barrier_;
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

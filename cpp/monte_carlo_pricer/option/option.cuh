@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 
-namespace kcu::mc {
+namespace emce {
 
 template <typename Derived>
 class option {
@@ -14,4 +14,4 @@ class option {
     }
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

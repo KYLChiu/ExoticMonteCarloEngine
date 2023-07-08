@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 
-namespace kcu::mc {
+namespace emce {
 
 /*                                 -- MODEL --
     Representation of the model dynamics: first order SDE dX_t = f(X_t, t) dt +
@@ -30,4 +30,4 @@ class model {
     }
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

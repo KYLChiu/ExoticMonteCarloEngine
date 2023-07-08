@@ -4,14 +4,14 @@
 #include <chrono>
 #include <cmath>
 #include <type_traits>
-#include "kc_utils/cuda/monte_carlo_pricer/model/black_scholes.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/monte_carlo_pricer.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/option/discrete_geometric_asian_call.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/option/down_and_out_call.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/option/european_call.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/option/european_put.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/simulater/analytical_simulater.cuh"
-#include "kc_utils/cuda/monte_carlo_pricer/simulater/euler_maruyama.cuh"
+#include "monte_carlo_pricer/model/black_scholes.cuh"
+#include "monte_carlo_pricer/monte_carlo_pricer.cuh"
+#include "monte_carlo_pricer/option/discrete_geometric_asian_call.cuh"
+#include "monte_carlo_pricer/option/down_and_out_call.cuh"
+#include "monte_carlo_pricer/option/european_call.cuh"
+#include "monte_carlo_pricer/option/european_put.cuh"
+#include "monte_carlo_pricer/simulater/analytical_simulater.cuh"
+#include "monte_carlo_pricer/simulater/euler_maruyama.cuh"
 
 namespace {
 
@@ -53,25 +53,26 @@ double analytical_down_and_out_call_price(double S, double K, double r,
                analytical_euro_call_price(barrier * barrier / S, K, r, v, T);
 }
 
-template <kcu::mc::dispatch_type DispatchType, typename Option,
+template <emce::dispatch_type DispatchType, typename Option,
           typename Simulater>
 void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
               std::size_t num_options = 1) {
-    using namespace kcu::mc;
+    using namespace emce;
     using std::chrono::duration;
     using std::chrono::duration_cast;
     using std::chrono::high_resolution_clock;
     using std::chrono::milliseconds;
 
-    double S_0 = 50.0;
+    double S_0 = 40.0;
     double r = 0.03;
     double sigma = 0.15;
-    double K = 50.0;
-    double T = 1.0;
-    std::size_t periods = 15;  // for Asian option
-    double barrier = K - 15;   // for Barriers
+    double K = 40.0;
+    double T = 0.5;
 
-    double tol = 1e-1;
+    std::size_t periods = 15;   // for Asian option
+    double barrier = 0.90 * K;  // for down and out barrier
+
+    double tol = 1e-2;
 
     auto start = high_resolution_clock::now();
 
@@ -138,6 +139,7 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
         K++;
         T += 0.1;
         sigma += 0.01;
+        barrier -= 0.01;
     }
 
     auto end = high_resolution_clock::now();
@@ -149,61 +151,61 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
 }  // namespace
 
 TEST(MonteCarlo, Cpp_EuropeanCall_Analytic_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
-             kcu::mc::analytical_simulater>();
+    run_test<emce::dispatch_type::cpp, emce::european_call,
+             emce::analytical_simulater>();
 }
 
 TEST(MonteCarlo, CUDA_EuropeanCall_Analytic_BS) {
-    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_call,
-             kcu::mc::analytical_simulater>();
+    run_test<emce::dispatch_type::cuda, emce::european_call,
+             emce::analytical_simulater>();
 }
 
 TEST(MonteCarlo, Cpp_EuropeanCall_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
-             kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cpp, emce::european_call,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, CUDA_EuropeanCall_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_call,
-             kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cpp, emce::european_call,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, Cpp_Put_EuropeanPut_Analytic_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_put,
-             kcu::mc::analytical_simulater>();
+    run_test<emce::dispatch_type::cpp, emce::european_put,
+             emce::analytical_simulater>();
 }
 
 TEST(MonteCarlo, CUDA_EuropeanPut_Analytic_BS) {
-    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_put,
-             kcu::mc::analytical_simulater>();
+    run_test<emce::dispatch_type::cuda, emce::european_put,
+             emce::analytical_simulater>();
 }
 
 TEST(MonteCarlo, Cpp_EuropeanPut_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::european_put,
-             kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cpp, emce::european_put,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, CUDA_EuropeanPut_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::european_put,
-             kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cuda, emce::european_put,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, Cpp_GeometricAsianCall_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cpp,
-             kcu::mc::discrete_geometric_asian_call, kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cpp,
+             emce::discrete_geometric_asian_call, emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, CUDA_GeometricAsianCall_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cuda,
-             kcu::mc::discrete_geometric_asian_call, kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cuda,
+             emce::discrete_geometric_asian_call, emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, Cpp_DownAndOutCall_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cpp, kcu::mc::down_and_out_call,
-             kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cpp, emce::down_and_out_call,
+             emce::euler_maruyama>();
 }
 
 TEST(MonteCarlo, CUDA_DownAndOutCall_EM_BS) {
-    run_test<kcu::mc::dispatch_type::cuda, kcu::mc::down_and_out_call,
-             kcu::mc::euler_maruyama>();
+    run_test<emce::dispatch_type::cuda, emce::down_and_out_call,
+             emce::euler_maruyama>();
 }

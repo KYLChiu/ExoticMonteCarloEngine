@@ -9,7 +9,7 @@
 #include "../option/path_dependent_option.cuh"
 #include "simulater.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 class analytical_simulater : public simulater<analytical_simulater> {
     friend class simulater<analytical_simulater>;
@@ -46,7 +46,7 @@ class analytical_simulater : public simulater<analytical_simulater> {
         using option_t = std::decay_t<decltype(*option.get())>;
         static_assert(
             ! std::is_base_of_v<path_dependent_option<option_t>, option_t>,
-            "Analytical simulater does not yet support path dependent "
+            "Analytical simulater does not support path dependent "
             "options.");
 
         thrust::default_random_engine rng(seed);
@@ -56,7 +56,7 @@ class analytical_simulater : public simulater<analytical_simulater> {
         double r = model->r();
         double sigma = model->sigma();
         double W_T = dist(rng);
-        // Antithetic variates
+        // Antithetic variates: https://en.wikipedia.org/wiki/Antithetic_variates
         double drift = (r - sigma * sigma / 2.0) * T_;
         double diffusion = sigma * W_T;
         double common = S_0 * exp(drift);
@@ -68,4 +68,4 @@ class analytical_simulater : public simulater<analytical_simulater> {
 
     double T_;
 };
-}  // namespace kcu::mc
+}  // namespace emce

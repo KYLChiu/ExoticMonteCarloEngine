@@ -1,4 +1,4 @@
-name: Cpp-Ubuntu
+name: C++
 
 on:
   push:

@@ -3,7 +3,7 @@
 #include <cuda_runtime.h>
 #include "option.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 class european_call : public option<european_call> {
     friend class option<european_call>;
@@ -19,4 +19,4 @@ class european_call : public option<european_call> {
     double K_;
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

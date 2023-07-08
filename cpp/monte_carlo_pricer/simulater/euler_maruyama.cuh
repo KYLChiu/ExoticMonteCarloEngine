@@ -8,7 +8,7 @@
 #include "../option/path_dependent_option.cuh"
 #include "simulater.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 namespace detail {
 
@@ -61,7 +61,7 @@ class euler_maruyama : public simulater<euler_maruyama> {
         using option_t = std::decay_t<decltype(*option.get())>;
         thrust::default_random_engine rng(rng_seed);
 
-        // Antithetic variates
+        // Antithetic variates: https://en.wikipedia.org/wiki/Antithetic_variates
         double X_t = model->initial_value();
         double X_ta = model->initial_value();
         double t = 0.0;
@@ -121,4 +121,4 @@ class euler_maruyama : public simulater<euler_maruyama> {
     std::size_t num_steps_;
     double T_;
 };
-}  // namespace kcu::mc
+}  // namespace emce

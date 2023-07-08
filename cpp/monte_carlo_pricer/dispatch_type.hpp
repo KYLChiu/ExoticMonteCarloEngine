@@ -1,6 +1,6 @@
 #pragma once
 
-namespace kcu::mc {
+namespace emce {
 
 enum class dispatch_type { cpp, cuda };
 
