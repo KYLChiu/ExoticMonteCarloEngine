@@ -1,32 +1,22 @@
-# the-big-learning-repo
-Learning stuff in cpp and python. Contributions are welcome!
+# EMCM - Exotic Monte Carlo Engine
+A MC engine to price exotic derivatives, with implementations in both Python / C++. The reason to code it up in two languages: 
+* Both are languages commonly used in quantitative finance - implementing a solution in both languages provides a way to learn the intracicies of both languages from bottom-up.
+* The languages themselves carry different benefits - Python (usually) provides a quicker and smoother development cycle where C++ provides the raw speed where there is demand for performance.
+
+Contributions are *more* than welcome!
 
 ## cpp
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Cpp-Ubuntu/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Clang-Format/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![codecov](https://codecov.io/gh/KYLChiu/the-big-learning-repo/branch/master/graph/badge.svg)](https://codecov.io/gh/KYLChiu/the-big-learning-repo)
 
-### Memory:
-* [KC] [**unique_ptr**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/memory/unique_ptr.hpp): example re-implementation of `std::unique_ptr<T>` with custom deleter.
-  * To do: invoke empty base optimisation to ensure class size is same as `T*` if deleter is empty.
-  * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/unique_ptr_test.cpp).
-
-### Concurrency:
-* [KC] [**future_chainer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/future_chainer.hpp): implements `std::future<T>` chaining by passing continuations to run (asychronously) on a successful future (returning a value of type `T`) or failed future (throwing an exception).
-  * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/future_chainer_test.cpp).
-* [KC] [**thread_pool**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/concurrency/thread_pool.hpp): a header only class allowing scheduling of work functions onto a pool of long-running worker threads. Synchronisation is fast and light-weight via C++20's `std::counting_semaphore`.
-  * To do: implement work-stealing.
-  * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/future_chainer_test.cpp)
-
-### Option pricing:
 * [KC] [**monte_carlo_pricer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/cuda/monte_carlo_pricer.cuh): a Monte Carlo pricer implemented in CUDA/multi-threaded C++.
-  * To do: improving stepping methods, sampling methods,
+  * To do: see [this link](https://github.com/users/KYLChiu/projects/2)
   * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu).
 
 ## python
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
-
-### Option pricing:
 * [JLo]: [Exotic Monte Carlo Pricer](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/ExoticEngine): An equity/FX exotic Monte Carlo pricer.
-  * see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
+  * To do: see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
   * Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/sandbox).
+
