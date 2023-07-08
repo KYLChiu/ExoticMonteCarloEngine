@@ -8,7 +8,6 @@ Contributions are *more* than welcome!
 ## C++
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/C++/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Clang-Format/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
-[![codecov](https://codecov.io/gh/KYLChiu/the-big-learning-repo/branch/master/graph/badge.svg)](https://codecov.io/gh/KYLChiu/the-big-learning-repo)
 * [KC]: [Implementation](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/monte_carlo_pricer/monte_carlo_pricer.cuh): a (header-only) Monte Carlo pricer implemented in CUDA/multi-threaded C++.
   * To do: see [this link](https://github.com/users/KYLChiu/projects/2)
   * Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu).
