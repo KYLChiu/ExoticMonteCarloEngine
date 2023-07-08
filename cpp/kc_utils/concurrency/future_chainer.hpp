@@ -78,12 +78,25 @@ class future_chainer final {
         concepts::future auto future,
         concepts::success_callback<decltype(future.get())> auto&& on_success,
         std::launch policy = std::launch::deferred) {
-        auto continuation = [future = std::move(future),
-                             on_success = std::forward<decltype(on_success)>(
-                                 on_success)]() mutable {
-            return on_success(future.get());
-        };
-        return std::async(policy, std::move(continuation));
+        if constexpr (! std::is_same_v<decltype(future.get()), void>) {
+            auto continuation =
+                [future = std::move(future),
+                 on_success =
+                     std::forward<decltype(on_success)>(on_success)]() mutable {
+                    auto v = future.get();
+                    return on_success(std::move(v));
+                };
+            return std::async(policy, std::move(continuation));
+        } else {
+            auto continuation =
+                [future = std::move(future),
+                 on_success =
+                     std::forward<decltype(on_success)>(on_success)]() mutable {
+                    future.get();
+                    return on_success();
+                };
+            return std::async(policy, std::move(continuation));
+        }
     }
 
     // Returns a future representing the evaluation of a continuation on a prior

@@ -10,9 +10,13 @@ Contributions are *more* than welcome!
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Clang-Format/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![codecov](https://codecov.io/gh/KYLChiu/the-big-learning-repo/branch/master/graph/badge.svg)](https://codecov.io/gh/KYLChiu/the-big-learning-repo)
 
+* [KC] [**monte_carlo_pricer**](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/kc_utils/cuda/monte_carlo_pricer.cuh): a Monte Carlo pricer implemented in CUDA/multi-threaded C++.
+  * To do: see [this link](https://github.com/users/KYLChiu/projects/2)
+  * Examples: [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu).
+
 ## python
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 * [JLo]: [Exotic Monte Carlo Pricer](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/ExoticEngine): An equity/FX exotic Monte Carlo pricer.
-  * see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
+  * To do: see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
   * Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/sandbox).
 
