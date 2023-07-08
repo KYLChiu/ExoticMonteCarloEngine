@@ -31,9 +31,6 @@ jobs:
       - name: test
         run: ctest --test-dir ./build
 
-      - name: Code coverage
-        run: cd ./cpp && bash <(curl -s https://codecov.io/bash) || echo "Codecov did not collect coverage reports"
-
   build-release:
     runs-on: ubuntu-latest
 
