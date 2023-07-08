@@ -2,14 +2,12 @@
 
 #include <cuda_runtime.h>
 
-namespace kcu::mc {
+namespace emce {
 
-/*                                 -- MODEL --
-    Representation of the model dynamics: first order SDE dX_t = f(X_t, t) dt +
-    g(X_t, t) dW_t, where the drift (f) and diffusion (g) are deterministic
-    functions and dW_t is a Brownian motion. Needs also to provide a discount
-    factor function.
-*/
+// Representation of the model dynamics: first order SDE dX_t = f(X_t, t) dt +
+// g(X_t, t) dW_t, where the drift (f) and diffusion (g) are deterministic
+// functions and dW_t is a Brownian motion. Needs also to provide a discount
+// factor function.
 template <typename Derived>
 class model {
    public:
@@ -30,4 +28,4 @@ class model {
     }
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

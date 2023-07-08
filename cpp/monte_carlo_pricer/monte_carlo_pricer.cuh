@@ -17,13 +17,11 @@
 #include "option/path_dependent_option.cuh"
 #include "simulater/simulater.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 namespace detail {
 
     // Functor for running the simulater.
-    // NB: this must be public because of visibility restrictions with
-    // thrust::reduce.
     template <typename Option, typename Simulater, typename Model>
     struct simulate_cuda {
         __host__ simulate_cuda(thrust::device_ptr<Option> opt_d,
@@ -64,7 +62,10 @@ class monte_carlo_pricer final {
         if constexpr (DispatchType == dispatch_type::cpp) {
             return dispatch_cpp(opt, sim, mdl, T);
         } else {
-            cudaDeviceSetLimit(cudaLimitMallocHeapSize, 128*1024*1024);
+            // Set the CUDA heap size to 256MB - we need this for carrying the
+            // paths around in device memory (for path dependent options)
+            cudaDeviceSetLimit(cudaLimitMallocHeapSize,
+                               static_cast<std::size_t>(2.56e+8));
             return dispatch_cuda(opt, sim, mdl, T);
         }
     }
@@ -86,10 +87,12 @@ class monte_carlo_pricer final {
 
         std::vector<aligned_double> thread_res(num_threads, 0.0);
 
+        // Each thread gets num_paths_ / num_threads, except the last one which
+        // gets num_paths_ / num_threads + num_paths_ % num_threads.
         auto work = [&](std::size_t thread_id) {
             std::size_t sims = num_paths_ / num_threads;
             std::size_t seed = sims * thread_id;
-            // The last thread gets the remainder of the paths.
+
             if (thread_id == num_threads - 1) {
                 sims += num_paths_ % num_threads;
             }
@@ -107,12 +110,15 @@ class monte_carlo_pricer final {
             t.join();
         }
 
-        double sum = 0.0;
-        for (const auto& res : thread_res) {
-            sum += res.value_;
-        }
+        auto sum_of_paths = [&]() {
+            double sum = 0.0;
+            for (auto& res : thread_res) {
+                sum += res.value_;
+            }
+            return sum;
+        }();
 
-        return mdl->discount_factor(T) * sum / num_paths_;
+        return mdl->discount_factor(T) * sum_of_paths / num_paths_;
     }
 
     template <typename Option, typename Simulater, typename Model>
@@ -141,4 +147,4 @@ class monte_carlo_pricer final {
     std::size_t num_paths_;
 };
 
-}  // namespace kcu::mc
+}  // namespace emce

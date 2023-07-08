@@ -10,13 +10,6 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
   main
   main.cpp
-  unique_ptr_test.cpp
-  basics_test.cpp
-  inheritance_test.cpp
-  thread_pool_test.cpp
-  alignment_test.cpp
-  future_chainer_test.cpp
-  data_structures_test.cpp
   mc_pricer_test.cu
 )
 

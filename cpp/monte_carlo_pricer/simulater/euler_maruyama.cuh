@@ -8,7 +8,7 @@
 #include "../option/path_dependent_option.cuh"
 #include "simulater.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
 namespace detail {
 
@@ -30,6 +30,8 @@ namespace detail {
 
 }  // namespace detail
 
+// EM method for simulating a generic first order SDE
+// https://en.wikipedia.org/wiki/Euler%E2%80%93Maruyama_method
 class euler_maruyama : public simulater<euler_maruyama> {
     friend class simulater<euler_maruyama>;
 
@@ -61,7 +63,8 @@ class euler_maruyama : public simulater<euler_maruyama> {
         using option_t = std::decay_t<decltype(*option.get())>;
         thrust::default_random_engine rng(rng_seed);
 
-        // Antithetic variates
+        // Antithetic variates:
+        // https://en.wikipedia.org/wiki/Antithetic_variates
         double X_t = model->initial_value();
         double X_ta = model->initial_value();
         double t = 0.0;
@@ -69,12 +72,23 @@ class euler_maruyama : public simulater<euler_maruyama> {
         if constexpr (std::is_base_of_v<path_dependent_option<option_t>,
                                         option_t>) {
             std::size_t periods = option->periods();
+
+            // Food for thought: the current design has a generic periods
+            // fields for path dependent options (this means
+            // monitoring periods for Asian option, and how many times we sample
+            // the path to check against the barrier for Barriers). But if the
+            // number of periods is too low, we cannot use that as an accurate
+            // step in simulating SDE. So users additionally pass in the normal
+            // num_steps_ field and we take steps = LCM(num_steps_,  periods).
+            // Is this overcomplicated?
             std::size_t num_steps =
                 detail::lowest_common_multiple(num_steps_, periods);
             std::size_t period = num_steps / periods;
             double dt = T_ / num_steps;
             double std_dev = sqrtf(dt);
 
+            // TODO: To be both CUDA and C++ compliant we must use raw ptrs
+            // here, but need to consider exception safety in future.
             double* X_ts = new double[periods];
             double* X_tas = new double[periods];
 
@@ -121,4 +135,4 @@ class euler_maruyama : public simulater<euler_maruyama> {
     std::size_t num_steps_;
     double T_;
 };
-}  // namespace kcu::mc
+}  // namespace emce

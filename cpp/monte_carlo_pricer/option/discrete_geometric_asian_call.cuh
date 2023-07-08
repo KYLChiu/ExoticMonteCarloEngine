@@ -4,8 +4,9 @@
 #include "option.cuh"
 #include "path_dependent_option.cuh"
 
-namespace kcu::mc {
+namespace emce {
 
+// https://quant.stackexchange.com/questions/68929/discrete-geometric-asian-option-call-price-formula
 class discrete_geometric_asian_call final
     : public path_dependent_option<discrete_geometric_asian_call> {
     using base_t = path_dependent_option<discrete_geometric_asian_call>;
@@ -31,4 +32,4 @@ class discrete_geometric_asian_call final
     double K_;
 };
 
-}  // namespace kcu::mc
+}  // namespace emce
