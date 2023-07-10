@@ -43,7 +43,8 @@ double bs_euro_call_rho(double S, double K, double r, double v, double T) {
     return K * T * exp(-r * T) * norm_cdf(d_j(2, S, K, r, v, T));
 }
 
-// Greeks follow BS model exactly - unit tests would break if incorporating dividend/repo rate
+// Greeks follow BS model exactly - unit tests would break if incorporating
+// dividend/repo rate
 template <emce::dispatch_type DispatchType, typename Option>
 void run_test(emce::black_scholes::sensitivities sensitivity,
               double bump_size = 1e-6, std::size_t num_steps = 1e2,
@@ -96,8 +97,8 @@ void run_test(emce::black_scholes::sensitivities sensitivity,
         }();
 
         auto start = high_resolution_clock::now();
-        double greek =
-            pricer.sensitivity(option, simulater, model, sensitivity, bump_size);
+        double greek = pricer.sensitivity(option, simulater, model, sensitivity,
+                                          bump_size);
         auto end = high_resolution_clock::now();
         auto elapsed = duration_cast<milliseconds>(end - start);
         total_elapsed += elapsed.count();
