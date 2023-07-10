@@ -90,8 +90,7 @@ class euler_maruyama : public simulater<euler_maruyama> {
             double dt = T / num_steps;
 
             // TODO: To be both CUDA and C++ compliant we must use raw ptrs
-            // here, but need to consider exception safety in future. Can we
-            // move this to static storage?
+            // here, but need to consider exception safety in future.
             double* X_ts = new double[periods];
             double* X_tas = new double[periods];
 
@@ -119,8 +118,8 @@ class euler_maruyama : public simulater<euler_maruyama> {
             return path;
         } else {
             double dt = T / num_steps_;
-
             thrust::random::normal_distribution<double> dist(0.0, sqrtf(dt));
+
             for (std::size_t i = 0; i < num_steps_; ++i) {
                 double dW_t = dist(rng);
                 X_t = X_t + model->drift(X_t, t) * dt +

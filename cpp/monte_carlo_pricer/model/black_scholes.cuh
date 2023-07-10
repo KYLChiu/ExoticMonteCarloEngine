@@ -5,6 +5,9 @@
 
 namespace emce {
 
+// Black Scholes model:
+// https://en.wikipedia.org/wiki/Black%E2%80%93Scholes_model
+// This currently does not yet support dividend or repo rates.
 class black_scholes final : public model<black_scholes, 4> {
     using base_t = model<black_scholes, 4>;
     friend class model<black_scholes, 4>;
@@ -41,15 +44,13 @@ class black_scholes final : public model<black_scholes, 4> {
     __host__ __device__ double parameter_impl(parameters parameter) const {
         return base_t::parameters_[static_cast<int>(parameter)];
     }
-    __host__ std::pair<std::shared_ptr<black_scholes>, double> bump_impl(
-        sensitivities sensitivity, double by_factor) const {
+    __host__ std::shared_ptr<black_scholes> bump_impl(sensitivities sensitivity,
+                                                      double bump_size) const {
         auto mdl = std::make_shared<black_scholes>(*this);
         std::size_t idx = static_cast<int>(sensitivity);
         double param = mdl->parameter(parameters(idx));
-        double bump_size = param * by_factor;
-        double new_param = param + bump_size;
-        mdl->base_t::parameters_[idx] = new_param;
-        return {mdl, bump_size};
+        mdl->base_t::parameters_[idx] = param + bump_size;
+        return mdl;
     }
 };
 

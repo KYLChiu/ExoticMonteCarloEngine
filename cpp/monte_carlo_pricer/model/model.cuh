@@ -57,16 +57,16 @@ class model {
         return static_cast<const Derived*>(this)->parameter_impl(parameter);
     }
 
-    // Returns pair (model, bump_size) where the model has a bump_size bump to
+    // Returns a bumped model where the model has an absolute bump_size bump to
     // the parameter corresponding to the input sensitivity. This is needed for
     // Greeks.
     // TODO: rethink how this should work. The enum class should be defined by
     // the derived class but it is not clear for users/developers.
     template <typename Enum>
-    __host__ std::pair<std::shared_ptr<Derived>, double> bump(
-        Enum sensitivity, double by_factor) const {
+    __host__ std::shared_ptr<Derived> bump(Enum sensitivity,
+                                           double bump_size) const {
         return static_cast<const Derived*>(this)->bump_impl(sensitivity,
-                                                            by_factor);
+                                                            bump_size);
     }
 
    protected:

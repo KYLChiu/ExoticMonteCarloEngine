@@ -76,15 +76,18 @@ class monte_carlo_pricer final {
     __host__ double sensitivity(std::shared_ptr<Option> opt,
                                 std::shared_ptr<Simulater> sim,
                                 std::shared_ptr<Model> mdl,
-                                Sensitivity sensitivity) {
-        // Central finite differencing
+                                Sensitivity sensitivity,
+                                double bump_size = 1e-6) {
+        // Central finite differencing with absolute bump size.
         // https://people.maths.ox.ac.uk/gilesm/mc/module_2/module_2_2.pdf
         // Long-term TODO: AAD. But this isn't so easy with CUDA!
         // TODO: second-order sensitivities.
         // TODO: handle discontinuous first derivatives.
-        double epsilon = 1e-2;
-        auto [mdl_up, bump_size] = mdl->bump(sensitivity, epsilon);
-        auto [mdl_dn, _] = mdl->bump(sensitivity, -epsilon);
+        // TODO: multiplicative bumps.
+        // Note: below prices actually using the same paths, but generated
+        // twice. This isn't efficient and should be refactored.
+        auto mdl_up = mdl->bump(sensitivity, bump_size);
+        auto mdl_dn = mdl->bump(sensitivity, -bump_size);
         return (price(opt, sim, mdl_up) - price(opt, sim, mdl_dn)) /
                (2 * bump_size);
     }
@@ -140,9 +143,9 @@ class monte_carlo_pricer final {
     }
 
     template <typename Option, typename Simulater, typename Model>
-    double price_cuda(std::shared_ptr<Option> opt,
-                      std::shared_ptr<Simulater> sim,
-                      std::shared_ptr<Model> mdl) {
+    __host__ double price_cuda(std::shared_ptr<Option> opt,
+                               std::shared_ptr<Simulater> sim,
+                               std::shared_ptr<Model> mdl) {
         // Copy data onto device.
         auto opt_dv = thrust::device_vector<Option>(1, *opt);
         auto sim_dv = thrust::device_vector<Simulater>(1, *sim);

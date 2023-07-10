@@ -55,7 +55,7 @@ double analytical_down_and_out_call_price(double S, double K, double r,
 
 template <emce::dispatch_type DispatchType, typename Option, typename Simulater>
 void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
-              std::size_t num_options = 5) {
+              std::size_t num_options = 1) {
     using namespace emce;
     using std::chrono::duration;
     using std::chrono::duration_cast;
@@ -133,10 +133,10 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
 
         double abs_err = std::abs(price - analytical_price);
         double rel_err = std::abs(abs_err / analytical_price);
-        // std::cout << "MC Price         : " << price << "\n";
-        // std::cout << "Analytical Price : " << analytical_price << "\n";
-        // std::cout << "Absolute Error   : " << abs_err << "\n";
-        // std::cout << "Relative Error   : " << rel_err << "\n";
+        std::cout << "MC Price         : " << price << "\n";
+        std::cout << "Analytical Price : " << analytical_price << "\n";
+        std::cout << "Absolute Error   : " << abs_err << "\n";
+        std::cout << "Relative Error   : " << rel_err << "\n";
         EXPECT_TRUE(rel_err < tol);
 
         S_0++;

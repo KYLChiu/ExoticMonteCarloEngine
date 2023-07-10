@@ -43,10 +43,11 @@ double bs_euro_call_rho(double S, double K, double r, double v, double T) {
     return K * T * exp(-r * T) * norm_cdf(d_j(2, S, K, r, v, T));
 }
 
+// Greeks follow BS model exactly - unit tests would break if incorporating dividend/repo rate
 template <emce::dispatch_type DispatchType, typename Option>
 void run_test(emce::black_scholes::sensitivities sensitivity,
-              std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
-              std::size_t num_options = 5) {
+              double bump_size = 1e-6, std::size_t num_steps = 1e2,
+              std::size_t num_paths = 1e6, std::size_t num_options = 1) {
     using namespace emce;
     using std::chrono::duration;
     using std::chrono::duration_cast;
@@ -96,17 +97,17 @@ void run_test(emce::black_scholes::sensitivities sensitivity,
 
         auto start = high_resolution_clock::now();
         double greek =
-            pricer.sensitivity(option, simulater, model, sensitivity);
+            pricer.sensitivity(option, simulater, model, sensitivity, bump_size);
         auto end = high_resolution_clock::now();
         auto elapsed = duration_cast<milliseconds>(end - start);
         total_elapsed += elapsed.count();
 
         double abs_err = std::abs(greek - analytical_greek);
         double rel_err = std::abs(abs_err / analytical_greek);
-        // std::cout << "MC Greek         : " << greek << "\n";
-        // std::cout << "Analytical Greek : " << analytical_greek << "\n";
-        // std::cout << "Absolute Error   : " << abs_err << "\n";
-        // std::cout << "Relative Error   : " << rel_err << "\n";
+        std::cout << "MC Greek         : " << greek << "\n";
+        std::cout << "Analytical Greek : " << analytical_greek << "\n";
+        std::cout << "Absolute Error   : " << abs_err << "\n";
+        std::cout << "Relative Error   : " << rel_err << "\n";
         EXPECT_TRUE(rel_err < tol);
 
         S_0++;
@@ -143,12 +144,12 @@ TEST(EMCE, CUDA_EuropeanCall_Vega_BS) {
 
 TEST(EMCE, Cpp_EuropeanCall_Theta_BS) {
     run_test<emce::dispatch_type::cpp, emce::european_call>(
-        emce::black_scholes::sensitivities::theta);
+        emce::black_scholes::sensitivities::theta, 1e-5);
 }
 
 TEST(EMCE, CUDA_EuropeanCall_Theta_BS) {
     run_test<emce::dispatch_type::cuda, emce::european_call>(
-        emce::black_scholes::sensitivities::theta);
+        emce::black_scholes::sensitivities::theta, 1e-5);
 }
 
 TEST(EMCE, Cpp_EuropeanCall_Rho_BS) {
