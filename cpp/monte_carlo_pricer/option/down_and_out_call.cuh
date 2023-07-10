@@ -13,7 +13,7 @@ class down_and_out_call final
     friend class option<down_and_out_call>;
 
    public:
-    __host__ __device__ down_and_out_call(double K, double barrier)
+    __host__ __device__ explicit down_and_out_call(double K, double barrier)
         : K_(K),
           barrier_(barrier),
           base_t(1e3 /* this needs to be thought through better */) {}

@@ -13,8 +13,8 @@ class discrete_geometric_asian_call final
     friend class option<discrete_geometric_asian_call>;
 
    public:
-    __host__ __device__ discrete_geometric_asian_call(double K,
-                                                      std::size_t periods)
+    __host__ __device__ explicit discrete_geometric_asian_call(
+        double K, std::size_t periods)
         : K_(K), base_t(periods) {}
 
    private:

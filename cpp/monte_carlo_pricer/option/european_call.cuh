@@ -10,7 +10,7 @@ class european_call : public option<european_call> {
     friend class option<european_call>;
 
    public:
-    __host__ __device__ european_call(double K) : K_(K) {}
+    __host__ __device__ explicit european_call(double K) : K_(K) {}
 
    private:
     __host__ __device__ double payoff_impl(double S) const {

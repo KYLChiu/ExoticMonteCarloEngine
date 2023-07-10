@@ -55,7 +55,7 @@ double analytical_down_and_out_call_price(double S, double K, double r,
 
 template <emce::dispatch_type DispatchType, typename Option, typename Simulater>
 void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
-              std::size_t num_options = 1) {
+              std::size_t num_options = 5) {
     using namespace emce;
     using std::chrono::duration;
     using std::chrono::duration_cast;
@@ -73,7 +73,7 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
 
     double tol = 1e-2;
 
-    auto start = high_resolution_clock::now();
+    std::size_t total_elapsed = 0;
 
     auto pricer = monte_carlo_pricer<DispatchType>(num_paths);
 
@@ -98,13 +98,13 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
 
         auto simulater = [&]() {
             if constexpr (std::is_same_v<Simulater, euler_maruyama>) {
-                return std::make_shared<euler_maruyama>(num_steps, T);
+                return std::make_shared<euler_maruyama>(num_steps);
             } else {
-                return std::make_shared<analytical_simulater>(T);
+                return std::make_shared<analytical_simulater>();
             }
         }();
 
-        auto model = std::make_shared<black_scholes>(S_0, r, sigma);
+        auto model = std::make_shared<black_scholes>(S_0, r, sigma, T);
 
         auto analytical_price = [&]() -> double {
             if constexpr (std::is_same_v<Option, european_call>) {
@@ -125,13 +125,18 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
             throw std::runtime_error("Unexpected option type.");
         }();
 
-        double price = pricer.run(option, simulater, model, T);
+        auto start = high_resolution_clock::now();
+        double price = pricer.price(option, simulater, model);
+        auto end = high_resolution_clock::now();
+        auto elapsed = duration_cast<milliseconds>(end - start);
+        total_elapsed += elapsed.count();
+
         double abs_err = std::abs(price - analytical_price);
         double rel_err = std::abs(abs_err / analytical_price);
-        std::cout << "MC Price         : " << price << "\n";
-        std::cout << "Analytical Price : " << analytical_price << "\n";
-        std::cout << "Absolute Error   : " << abs_err << "\n";
-        std::cout << "Relative Error   : " << rel_err << "\n";
+        // std::cout << "MC Price         : " << price << "\n";
+        // std::cout << "Analytical Price : " << analytical_price << "\n";
+        // std::cout << "Absolute Error   : " << abs_err << "\n";
+        // std::cout << "Relative Error   : " << rel_err << "\n";
         EXPECT_TRUE(rel_err < tol);
 
         S_0++;
@@ -141,70 +146,68 @@ void run_test(std::size_t num_steps = 1e2, std::size_t num_paths = 1e6,
         barrier -= 0.01;
     }
 
-    auto end = high_resolution_clock::now();
-    auto elapsed = duration_cast<milliseconds>(end - start);
     std::cout << "Average elapsed time per option (ms): "
-              << elapsed.count() / num_options << "\n";
+              << total_elapsed / num_options << "\n";
 }
 
 }  // namespace
 
-TEST(MonteCarlo, Cpp_EuropeanCall_Analytic_BS) {
+TEST(EMCE, Cpp_EuropeanCall_Analytic_BS) {
     run_test<emce::dispatch_type::cpp, emce::european_call,
              emce::analytical_simulater>();
 }
 
-TEST(MonteCarlo, CUDA_EuropeanCall_Analytic_BS) {
+TEST(EMCE, CUDA_EuropeanCall_Analytic_BS) {
     run_test<emce::dispatch_type::cuda, emce::european_call,
              emce::analytical_simulater>();
 }
 
-TEST(MonteCarlo, Cpp_EuropeanCall_EM_BS) {
+TEST(EMCE, Cpp_EuropeanCall_EM_BS) {
     run_test<emce::dispatch_type::cpp, emce::european_call,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, CUDA_EuropeanCall_EM_BS) {
+TEST(EMCE, CUDA_EuropeanCall_EM_BS) {
     run_test<emce::dispatch_type::cpp, emce::european_call,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, Cpp_Put_EuropeanPut_Analytic_BS) {
+TEST(EMCE, Cpp_Put_EuropeanPut_Analytic_BS) {
     run_test<emce::dispatch_type::cpp, emce::european_put,
              emce::analytical_simulater>();
 }
 
-TEST(MonteCarlo, CUDA_EuropeanPut_Analytic_BS) {
+TEST(EMCE, CUDA_EuropeanPut_Analytic_BS) {
     run_test<emce::dispatch_type::cuda, emce::european_put,
              emce::analytical_simulater>();
 }
 
-TEST(MonteCarlo, Cpp_EuropeanPut_EM_BS) {
+TEST(EMCE, Cpp_EuropeanPut_EM_BS) {
     run_test<emce::dispatch_type::cpp, emce::european_put,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, CUDA_EuropeanPut_EM_BS) {
+TEST(EMCE, CUDA_EuropeanPut_EM_BS) {
     run_test<emce::dispatch_type::cuda, emce::european_put,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, Cpp_GeometricAsianCall_EM_BS) {
+TEST(EMCE, Cpp_GeometricAsianCall_EM_BS) {
     run_test<emce::dispatch_type::cpp, emce::discrete_geometric_asian_call,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, CUDA_GeometricAsianCall_EM_BS) {
+TEST(EMCE, CUDA_GeometricAsianCall_EM_BS) {
     run_test<emce::dispatch_type::cuda, emce::discrete_geometric_asian_call,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, Cpp_DownAndOutCall_EM_BS) {
+TEST(EMCE, Cpp_DownAndOutCall_EM_BS) {
     run_test<emce::dispatch_type::cpp, emce::down_and_out_call,
              emce::euler_maruyama>();
 }
 
-TEST(MonteCarlo, CUDA_DownAndOutCall_EM_BS) {
+TEST(EMCE, CUDA_DownAndOutCall_EM_BS) {
     run_test<emce::dispatch_type::cuda, emce::down_and_out_call,
              emce::euler_maruyama>();
 }

@@ -47,40 +47,59 @@ class monte_carlo_pricer final {
         : num_paths_(num_paths) {}
 
     template <typename Option, typename Simulater, typename Model>
-    __host__ double run(std::shared_ptr<Option> opt,
-                        std::shared_ptr<Simulater> sim,
-                        std::shared_ptr<Model> mdl, double T) {
+    __host__ double price(std::shared_ptr<Option> opt,
+                          std::shared_ptr<Simulater> sim,
+                          std::shared_ptr<Model> mdl) {
         static_assert(std::is_base_of_v<option<Option>, Option>,
                       "Unexpected option type. Options are expected to derived "
                       "from the CRTP type option<Derived>.");
         static_assert(std::is_base_of_v<simulater<Simulater>, Simulater>,
                       "Unexpected simulater type. Simulaters are expected to "
                       "derived from the CRTP type simulater<Derived>.");
-        static_assert(std::is_base_of_v<model<Model>, Model>,
-                      "Unexpected model type. Models are expected to derived "
-                      "from the CRTP type model<Derived>.");
+        static_assert(
+            std::is_base_of_v<model<Model, Model::num_parameters()>, Model>,
+            "Unexpected model type. Models are expected to derived "
+            "from the CRTP type model<Derived>.");
         if constexpr (DispatchType == dispatch_type::cpp) {
-            return dispatch_cpp(opt, sim, mdl, T);
+            return price_cpp(opt, sim, mdl);
         } else {
             // Set the CUDA heap size to 256MB - we need this for carrying the
-            // paths around in device memory (for path dependent options)
+            // paths around in device memory (for path dependent options).
             cudaDeviceSetLimit(cudaLimitMallocHeapSize,
                                static_cast<std::size_t>(2.56e+8));
-            return dispatch_cuda(opt, sim, mdl, T);
+            return price_cuda(opt, sim, mdl);
         }
     }
 
+    template <typename Option, typename Simulater, typename Model,
+              typename Sensitivity>
+    __host__ double sensitivity(std::shared_ptr<Option> opt,
+                                std::shared_ptr<Simulater> sim,
+                                std::shared_ptr<Model> mdl,
+                                Sensitivity sensitivity) {
+        // Central finite differencing
+        // https://people.maths.ox.ac.uk/gilesm/mc/module_2/module_2_2.pdf
+        // Long-term TODO: AAD. But this isn't so easy with CUDA!
+        // TODO: second-order sensitivities.
+        // TODO: handle discontinuous first derivatives.
+        double epsilon = 1e-2;
+        auto [mdl_up, bump_size] = mdl->bump(sensitivity, epsilon);
+        auto [mdl_dn, _] = mdl->bump(sensitivity, -epsilon);
+        return (price(opt, sim, mdl_up) - price(opt, sim, mdl_dn)) /
+               (2 * bump_size);
+    }
+
    private:
-    // Wrapper for double to alleviate effects of false sharing
+    // Wrapper for double to alleviate effects of false sharing.
     struct aligned_double {
-        aligned_double(double value) : value_(value) {}
+        __host__ aligned_double(double value) : value_(value) {}
         alignas(64) double value_;
     };
 
     template <typename Option, typename Simulater, typename Model>
-    double dispatch_cpp(std::shared_ptr<Option> opt,
-                        std::shared_ptr<Simulater> sim,
-                        std::shared_ptr<Model> mdl, double T) {
+    __host__ double price_cpp(std::shared_ptr<Option> opt,
+                              std::shared_ptr<Simulater> sim,
+                              std::shared_ptr<Model> mdl) {
         std::size_t num_threads = std::thread::hardware_concurrency();
         std::vector<std::thread> ts;
         ts.reserve(num_threads);
@@ -92,7 +111,6 @@ class monte_carlo_pricer final {
         auto work = [&](std::size_t thread_id) {
             std::size_t sims = num_paths_ / num_threads;
             std::size_t seed = sims * thread_id;
-
             if (thread_id == num_threads - 1) {
                 sims += num_paths_ % num_threads;
             }
@@ -118,14 +136,14 @@ class monte_carlo_pricer final {
             return sum;
         }();
 
-        return mdl->discount_factor(T) * sum_of_paths / num_paths_;
+        return mdl->discount_factor() * sum_of_paths / num_paths_;
     }
 
     template <typename Option, typename Simulater, typename Model>
-    double dispatch_cuda(std::shared_ptr<Option> opt,
-                         std::shared_ptr<Simulater> sim,
-                         std::shared_ptr<Model> mdl, double T) {
-        // Copy data onto device
+    double price_cuda(std::shared_ptr<Option> opt,
+                      std::shared_ptr<Simulater> sim,
+                      std::shared_ptr<Model> mdl) {
+        // Copy data onto device.
         auto opt_dv = thrust::device_vector<Option>(1, *opt);
         auto sim_dv = thrust::device_vector<Simulater>(1, *sim);
         auto mdl_dv = thrust::device_vector<Model>(1, *mdl);
@@ -141,7 +159,7 @@ class monte_carlo_pricer final {
                                      detail::simulate_cuda(opt_d, sim_d, mdl_d),
                                      0.0, thrust::plus<double>());
 
-        return mdl->discount_factor(T) * sum / num_paths_;
+        return mdl->discount_factor() * sum / num_paths_;
     }
 
     std::size_t num_paths_;
