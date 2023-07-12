@@ -8,22 +8,21 @@ on:
     branches:
       - master
 
-
-env:
-  CTEST_OUTPUT_ON_FAILURE: 1
-  CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
-  CPM_SOURCE_CACHE: ${{ github.workspace }}/cpm_modules
-
-  
-
 jobs:
   build-debug:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+        id: checkout
+
+      - uses: Jimver/cuda-toolkit@v0.2.8
+        id: cuda-toolkit
+        with:
+          cuda: '11.8.0'
+          linux-local-args: '["--toolkit"]'
 
       - name: configure
-        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Debug -DENABLE_TEST_COVERAGE=1
+        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Debug
 
       - name: build
         run: cmake --build build --config Debug --target all --
@@ -32,10 +31,16 @@ jobs:
         run: ctest --test-dir ./build
 
   build-release:
-    runs-on: ubuntu-latest
-
+    runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v3
+        id: checkout
+
+      - uses: Jimver/cuda-toolkit@v0.2.8
+        id: cuda-toolkit
+        with:
+          cuda: '11.8.0'
+          linux-local-args: '["--toolkit"]'
 
       - name: configure
         run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release
