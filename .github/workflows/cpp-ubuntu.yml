@@ -9,27 +9,6 @@ on:
       - master
 
 jobs:
-  build-debug:
-    runs-on: ubuntu-20.04
-    steps:
-      - uses: actions/checkout@v3
-        id: checkout
-
-      - uses: Jimver/cuda-toolkit@v0.2.8
-        id: cuda-toolkit
-        with:
-          cuda: '11.7.0'
-          linux-local-args: '["--toolkit"]'
-
-      - name: configure
-        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Debug
-
-      - name: build
-        run: cmake --build build --config Debug --target all --
-
-      - name: test
-        run: ctest --test-dir ./build
-
   build-release:
     runs-on: ubuntu-20.04
     steps:
