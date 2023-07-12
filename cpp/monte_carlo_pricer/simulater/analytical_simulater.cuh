@@ -15,7 +15,7 @@ class analytical_simulater : public simulater<analytical_simulater> {
     friend class simulater<analytical_simulater>;
 
    public:
-    __host__ __device__ analytical_simulater(double T) : T_(T) {}
+    __host__ __device__ analytical_simulater() {}
 
    private:
     template <typename Option, typename Model>
@@ -49,24 +49,24 @@ class analytical_simulater : public simulater<analytical_simulater> {
             "Analytical simulater does not support path dependent "
             "options.");
 
-        thrust::default_random_engine rng(seed);
-        thrust::random::normal_distribution<double> dist(0.0, sqrtf(T_));
+        double T = model->parameter(black_scholes::parameters::maturity);
 
-        double S_0 = model->initial_value();
-        double r = model->r();
-        double sigma = model->sigma();
+        thrust::default_random_engine rng(seed);
+        thrust::random::normal_distribution<double> dist(0.0, sqrtf(T));
+
+        double S_0 = model->parameter(black_scholes::parameters::initial_value);
+        double r = model->parameter(black_scholes::parameters::risk_free_rate);
+        double sigma = model->parameter(black_scholes::parameters::volatility);
         double W_T = dist(rng);
-        // Antithetic variates:
-        // https://en.wikipedia.org/wiki/Antithetic_variates
-        double drift = (r - sigma * sigma / 2.0) * T_;
+        double drift = (r - sigma * sigma / 2.0) * T;
         double diffusion = sigma * W_T;
         double common = S_0 * exp(drift);
+        // Antithetic variates:
+        // https://en.wikipedia.org/wiki/Antithetic_variates
         double S_T = common * exp(diffusion);
         double S_Ta = common * exp(-diffusion);
         return (option->payoff(S_T) + option->payoff(S_Ta)) / 2.0;
 #pragma nv_diagnostic pop
     }
-
-    double T_;
 };
 }  // namespace emce

@@ -10,7 +10,8 @@ FetchContent_MakeAvailable(googletest)
 add_executable(
   main
   main.cpp
-  mc_pricer_test.cu
+  price_test.cu
+  sensitivity_test.cu
 )
 
 target_link_libraries(
