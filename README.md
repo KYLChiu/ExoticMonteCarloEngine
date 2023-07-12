@@ -8,9 +8,28 @@ Contributions are *more* than welcome!
 ## C++
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/C++/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Clang-Format/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
-* [KC]: [Implementation](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/monte_carlo_pricer/monte_carlo_pricer.cuh): a (header-only) Monte Carlo pricer implemented in CUDA/multi-threaded C++.
-  * To do: see [this link](https://github.com/users/KYLChiu/projects/2)
-  * Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu).
+* The implementation can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/monte_carlo_pricer).
+* Example tests can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu)
+* Project to-dos are [here](https://github.com/users/KYLChiu/projects/2).
+
+### Features
+* Interface fully interporable between CUDA/C++, switching via enum.
+
+### Requirements
+* CUDA toolkit (recommended version >= 11.7.0) with nvcc compiler.
+* CMake (version >= 3.25)
+* C++17 compliant compiler.
+
+### Install
+Build:
+```
+cmake -S ./cpp -B build
+cmake --build --target all --
+```
+Run tests:
+```
+ctest --test-dir ./build
+```
 
 ## Python
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
