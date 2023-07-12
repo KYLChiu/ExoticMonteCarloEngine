@@ -1,7 +1,0 @@
-{
-  "name": "CUDA Codespaces",
-  "dockerFile": "Dockerfile",
-  "extensions": [
-    "ms-vscode.cpptools"
-  ]
-}
