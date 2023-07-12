@@ -9,7 +9,7 @@ Contributions are *more* than welcome!
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/C++/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Clang-Format/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 * The implementation can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/monte_carlo_pricer).
-* Example tests can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox/mc_pricer_test.cu)
+* Example tests can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox.cu)
 * Project to-dos are [here](https://github.com/users/KYLChiu/projects/2).
 
 ### Features
