@@ -28,4 +28,4 @@ jobs:
         run: cmake --build build --config Release --target all --
 
       - name: test
-        run: ctest --test-dir ./build
+        run: ctest --test-dir ./build -E CUDA
