@@ -1,8 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include "option.cuh"
-#include "path_dependent_option.cuh"
+#include "emce/option/path_dependent_option.cuh"
 
 namespace emce {
 
@@ -18,16 +17,7 @@ class discrete_geometric_asian_call final
         : K_(K), base_t(periods) {}
 
    private:
-    __host__ __device__ double payoff_impl(double* spots) const {
-        // TODO: this may benefit from having a separate GPU impl.
-        double G = 1.0;
-        double size = base_t::periods();
-        for (std::size_t i = 0; i < size; ++i) {
-            G *= spots[i];
-        }
-        G = pow(G, 1.0 / size);
-        return max(G - K_, 0.0);
-    }
+    __host__ __device__ double payoff_impl(double* spots) const;
 
     double K_;
 };

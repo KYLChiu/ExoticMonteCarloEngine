@@ -2,7 +2,7 @@
 
 #include <assert.h>
 #include <cuda_runtime.h>
-#include "option.cuh"
+#include "emce/option/option.cuh"
 
 namespace emce {
 
@@ -16,7 +16,7 @@ class path_dependent_option : public option<Derived> {
     __host__ __device__ std::size_t periods() const { return periods_; }
 
    protected:
-    __host__ __device__ path_dependent_option(std::size_t periods)
+    __host__ __device__ explicit path_dependent_option(std::size_t periods)
         : periods_(periods) {
         assert(periods_ > 0);
     }

@@ -8,23 +8,23 @@ Contributions are *more* than welcome!
 ## C++
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/C++/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Clang-Format/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
-* The implementation can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/monte_carlo_pricer).
-* Example tests can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/sandbox.cu)
+* The library can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/emce).
+* Example tests can be found [here](https://github.com/KYLChiu/the-big-learning-repo/blob/master/cpp/emce/tests)
 * Project to-dos are [here](https://github.com/users/KYLChiu/projects/2).
 
 ### Features
 * Interface fully interporable between CUDA/C++, switching via enum.
 
 ### Requirements
-* CUDA toolkit (recommended version >= 11.7.0) with nvcc compiler.
-* CMake (version >= 3.25)
+* CUDA toolkit (tested on 11.7.0) with nvcc compiler.
+* CMake (version >= 3.18, as we need CUDA with C++17 standard).
 * C++17 compliant compiler.
 
 ### Install
 Build:
 ```
-cmake -S ./cpp -B build
-cmake --build --target all --
+cmake -S ./cpp/emce -B build
+cmake --build
 ```
 Run tests:
 ```

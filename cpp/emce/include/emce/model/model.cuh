@@ -14,7 +14,7 @@ class model {
    public:
     template <typename... Args>
     __host__ __device__ model(Args&&... args)
-        : parameters_{static_cast<double>(args)...} {
+        : parameters_{static_cast<double>(std::forward<Args>(args))...} {
         static_assert(sizeof...(args) == NumParameters,
                       "Number of arguments does not match the expected number "
                       "of model parameters.");
@@ -33,7 +33,18 @@ class model {
         return *this;
     }
 
-    // No move ctor/assignment operator as no std::move() for device.
+    __host__ __device__ model(model&& other) noexcept {
+        for (std::size_t i = 0; i < NumParameters; ++i) {
+            parameters_[i] = std::move(other.parameters_[i]);
+        }
+    }
+
+    __host__ __device__ model& operator=(model&& other) noexcept {
+        if (this != &other) {
+            parameters_ = std::move(other.parameters_);
+        }
+        return *this;
+    }
 
     __host__ __device__ virtual ~model() {}
 

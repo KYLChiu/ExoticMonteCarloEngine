@@ -8,14 +8,15 @@
 #include <thrust/device_ptr.h>
 #include <thrust/device_vector.h>
 #include <thrust/execution_policy.h>
+#include <thrust/sequence.h>
 #include <memory>
 #include <thread>
 #include <type_traits>
-#include "dispatch_type.hpp"
-#include "model/model.cuh"
-#include "option/option.cuh"
-#include "option/path_dependent_option.cuh"
-#include "simulater/simulater.cuh"
+#include "emce/model/model.cuh"
+#include "emce/option/option.cuh"
+#include "emce/option/path_dependent_option.cuh"
+#include "emce/pricer/dispatch_type.cuh"
+#include "emce/simulater/simulater.cuh"
 
 namespace emce {
 
@@ -59,7 +60,7 @@ class monte_carlo_pricer final {
         static_assert(
             std::is_base_of_v<model<Model, Model::num_parameters()>, Model>,
             "Unexpected model type. Models are expected to derived "
-            "from the CRTP type model<Derived>.");
+            "from the CRTP type model<Derived, num_parameters>.");
         if constexpr (DispatchType == dispatch_type::cpp) {
             return price_cpp(opt, sim, mdl);
         } else {

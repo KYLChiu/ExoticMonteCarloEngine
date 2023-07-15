@@ -1,7 +1,7 @@
 #pragma once
 
-#include <cuda_runtime.h>
-#include "model.cuh"
+#include <memory>
+#include "emce/model/model.cuh"
 
 namespace emce {
 
@@ -29,29 +29,17 @@ class black_scholes final : public model<black_scholes, 4> {
                                                double T /* maturity */)
         : base_t(S_0, r, sigma, T) {}
 
-    __host__ static constexpr std::size_t num_parameters() { return 4; }
+    __host__ __device__ static constexpr std::size_t num_parameters() {
+        return 4;
+    }
 
    private:
-    __host__ __device__ double drift_impl(double X_t, double t) const {
-        return base_t::parameters_[1] * X_t;
-    }
-    __host__ __device__ double diffusion_impl(double X_t, double t) const {
-        return base_t::parameters_[2] * X_t;
-    }
-    __host__ __device__ double discount_factor_impl() const {
-        return exp(-base_t::parameters_[1] * base_t::parameters_[3]);
-    }
-    __host__ __device__ double parameter_impl(parameters parameter) const {
-        return base_t::parameters_[static_cast<int>(parameter)];
-    }
+    __host__ __device__ double drift_impl(double X_t, double t) const;
+    __host__ __device__ double diffusion_impl(double X_t, double t) const;
+    __host__ __device__ double discount_factor_impl() const;
+    __host__ __device__ double parameter_impl(parameters parameter) const;
     __host__ std::shared_ptr<black_scholes> bump_impl(sensitivities sensitivity,
-                                                      double bump_size) const {
-        auto mdl = std::make_shared<black_scholes>(*this);
-        std::size_t idx = static_cast<int>(sensitivity);
-        double param = mdl->parameter(parameters(idx));
-        mdl->base_t::parameters_[idx] = param + bump_size;
-        return mdl;
-    }
+                                                      double bump_size) const;
 };
 
 }  // namespace emce

@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include "option.cuh"
+#include "emce/option/option.cuh"
 
 namespace emce {
 
