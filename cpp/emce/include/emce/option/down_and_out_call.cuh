@@ -1,8 +1,7 @@
 #pragma once
 
 #include <cuda_runtime.h>
-#include "option.cuh"
-#include "path_dependent_option.cuh"
+#include "emce/option/path_dependent_option.cuh"
 
 namespace emce {
 
@@ -19,15 +18,7 @@ class down_and_out_call final
           base_t(1e3 /* this needs to be thought through better */) {}
 
    private:
-    __host__ __device__ double payoff_impl(double* spots) const {
-        std::size_t size = base_t::periods();
-        for (std::size_t i = 0; i < size; ++i) {
-            if (spots[i] <= barrier_) {
-                return 0.0;
-            }
-        }
-        return max(spots[size - 1] - K_, 0.0);
-    }
+    __host__ __device__ double payoff_impl(double* spots) const;
 
     double K_;
     double barrier_;

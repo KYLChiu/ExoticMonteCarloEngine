@@ -22,10 +22,10 @@ jobs:
           linux-local-args: '["--toolkit"]'
 
       - name: configure
-        run: cmake -S ./cpp -B build -DCMAKE_BUILD_TYPE=Release
+        run: cmake -S ./cpp/emce -B build
 
       - name: build
-        run: cmake --build build --config Release --target all --
+        run: cmake --build build
 
       - name: test
         run: ctest --test-dir ./build -E CUDA

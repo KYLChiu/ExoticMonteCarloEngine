@@ -5,9 +5,9 @@
 #include <thrust/random.h>
 #include <memory>
 #include <type_traits>
-#include "../model/black_scholes.cuh"
-#include "../option/path_dependent_option.cuh"
-#include "simulater.cuh"
+#include "emce/model/black_scholes.cuh"
+#include "emce/option/path_dependent_option.cuh"
+#include "emce/simulater/simulater.cuh"
 
 namespace emce {
 

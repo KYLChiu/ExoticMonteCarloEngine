@@ -1,17 +1,17 @@
-#include <cuda_runtime.h>
 #include <gtest/gtest.h>
 #include <stdio.h>
 #include <chrono>
 #include <cmath>
-#include <type_traits>
-#include "monte_carlo_pricer/model/black_scholes.cuh"
-#include "monte_carlo_pricer/monte_carlo_pricer.cuh"
-#include "monte_carlo_pricer/option/discrete_geometric_asian_call.cuh"
-#include "monte_carlo_pricer/option/down_and_out_call.cuh"
-#include "monte_carlo_pricer/option/european_call.cuh"
-#include "monte_carlo_pricer/option/european_put.cuh"
-#include "monte_carlo_pricer/simulater/analytical_simulater.cuh"
-#include "monte_carlo_pricer/simulater/euler_maruyama.cuh"
+#include <emce/model/black_scholes.cuh>
+#include <emce/option/discrete_geometric_asian_call.cuh>
+#include <emce/option/down_and_out_call.cuh>
+#include <emce/option/european_call.cuh>
+#include <emce/option/european_put.cuh>
+#include <emce/option/path_dependent_option.cuh>
+#include <emce/pricer/dispatch_type.cuh>
+#include <emce/pricer/pricer.cuh>
+#include <emce/simulater/analytical_simulater.cuh>
+#include <emce/simulater/euler_maruyama.cuh>
 
 namespace {
 
