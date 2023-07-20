@@ -16,10 +16,10 @@ class ExoticEngine(abc.ABC):
     def __init__(self, product: PDO.PathDependent, rate: P.Parameter):
         self._product = product
         self._r = rate
-        self._discounts = [
+        discounts = [
             -self._r.get_mean(0, t) * t for t in product.get_possible_cashflow_times()
         ]
-        self._discounts = np.exp(self._discounts)
+        self._discounts = np.exp(np.array(discounts))
 
     def run_simulation(self, collector: Stats.GetStatistics, num_paths: int) -> None:
         for i in range(num_paths):
