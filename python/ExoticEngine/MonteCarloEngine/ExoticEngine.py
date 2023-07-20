@@ -11,18 +11,20 @@ from ExoticEngine.Statistics import Statistics as Stats
 
 
 class ExoticEngine(abc.ABC):
+    """Need to think how to handle multi-asset exotics - use a decorator maybe?"""
+
     def __init__(self, product: PDO.PathDependent, rate: P.Parameter):
         self._product = product
         self._r = rate
-        cashflow_times = product.get_possible_cashflow_times()
-        self._discounts = []
-        for t in cashflow_times:
-            self._discounts.append(np.exp(-self._r.get_mean(0, t) * t))
+        self._discounts = [
+            -self._r.get_mean(0, t) * t for t in product.get_possible_cashflow_times()
+        ]
+        self._discounts = np.exp(self._discounts)
 
     def run_simulation(self, collector: Stats.GetStatistics, num_paths: int) -> None:
         for i in range(num_paths):
             simulated_spots = self.run_pathwise_simulation()
-            discounted_flows = self.get_pathwise_discounted_flow(simulated_spots)
+            discounted_flows = self.__get_pathwise_discounted_flow(simulated_spots)
             collector.add_one_result(discounted_flows)
 
     @abc.abstractmethod
@@ -30,12 +32,11 @@ class ExoticEngine(abc.ABC):
         """This is an abstract method: dynamics is model dependent"""
         pass
 
-    def get_pathwise_discounted_flow(self, simulated_spots: tuple[float]) -> float:
+    def __get_pathwise_discounted_flow(self, simulated_spots: tuple[float]) -> float:
         future_flows = self._product.get_cash_flows(simulated_spots)
-        total_discounted_flows = 0
-        # I am sure there is a more Pythonic way of doing this running sum
-        for i, cf in enumerate(future_flows):
-            total_discounted_flows += cf.get_amount() * self._discounts[i]
+        total_discounted_flows = sum(
+            self._discounts[i] * cf.get_amount() for i, cf in enumerate(future_flows)
+        )
         return total_discounted_flows
 
 
@@ -58,20 +59,18 @@ class ExoticBSEngine(ExoticEngine):
         self._RNG.reset_dimension(self._num_ref_times)
         self._spot = spot
 
-        variances, drifts = [], []
+        self._variances, self._drifts = [], []
         for i in range(self._num_ref_times - 1):
             t = self._ref_times[i]
             t_next = self._ref_times[i + 1]
             v = vol.get_square_integral(t, t_next)
-            variances.append(v)
-            drifts.append(
+            self._variances.append(v)
+            self._drifts.append(
                 rate.get_integral(t, t_next)
                 - dividend.get_integral(t, t_next)
                 - repo.get_integral(t, t_next)
                 - 0.5 * v
             )
-        self._variances = tuple(variances)
-        self._drifts = tuple(drifts)
 
     def run_pathwise_simulation(self):
         std_normals = self._RNG.get_gaussian()  # not sure if this should be in ctor
@@ -81,5 +80,5 @@ class ExoticBSEngine(ExoticEngine):
             current_log_spot += (
                 self._drifts[i] + np.sqrt(self._variances[i]) * std_normals[i]
             )
-            spot_values.append(np.exp(current_log_spot))
-        return tuple(spot_values)
+            spot_values.append(current_log_spot)
+        return tuple(np.exp(np.array(spot_values)))
