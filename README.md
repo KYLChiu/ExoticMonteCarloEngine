@@ -33,7 +33,23 @@ ctest --test-dir ./build
 
 ## Python
 [![Actions Status](https://github.com/KYLChiu/the-big-learning-repo/workflows/Python/badge.svg)](https://github.com/KYLChiu/the-big-learning-repo/actions)
-* [JLo]: [Exotic Monte Carlo Pricer](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/ExoticEngine): An equity/FX exotic Monte Carlo pricer.
-  * To do: see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
-  * Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/sandbox).
 
+[Exotic Monte Carlo Pricer](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/ExoticEngine): An equity/FX exotic Monte Carlo pricer.
+* To do: see [this link](https://github.com/users/KYLChiu/projects/1) for a list of issues and project info.
+* Examples: see unit tests [here](https://github.com/KYLChiu/the-big-learning-repo/tree/master/python/sandbox).
+
+### Features (goals)
+* advanced smile modelling (LV, SV, LSV)
+* coherent multi-asset simulation (hybrid exotic engine)
+* support wide range of path-dependent exotics
+* advanced variance reduction techniques (control variant, Quasi random numbers)
+* risk engine (FDM, AAD)
+
+Python notebooks (analytics):
+* [Vanilla put/call pricing with flat vol](https://github.com/KYLChiu/ExoticMonteCarloEngine/blob/fix-readme/python/ExoticEngine/VanilliaAnalytics.ipynb)
+* Path dependent option pricing with flat vol (tbd)
+* Barrier option risk profiles with flat vol (tbd)
+* Simle dynamics under BS model with local vol (tbd)
+* Smile dynamics under BS model with SV - Heston model (tbd)
+* Convergence speed under different RNGs (tbd)
+* Rainbow option pricing (tbd)
