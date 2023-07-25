@@ -51,8 +51,9 @@ class BSLocalVolatilitySurface(LocalVolatilitySurface):
 
     def local_vol(self, K, T):
         """
-        Instead using standard Dupire formula (based on option prem)
+        Instead of using standard Dupire formula (based on option prem)
         It is more convienent/efficient to work with IV directly
+        add reference
         """
         log_moneyness = lambda k: np.log(k / self._forward(T))  # log_moneyness
         inverse_y = lambda Y: np.exp(Y) * self._forward(T)
@@ -77,13 +78,14 @@ class BSLocalVolatilitySurface(LocalVolatilitySurface):
         """
         Just for sanity checking: should give the same number as local_vol
         using Dupire formula explicitly
+        add reference
         """
         r = self._r.get_mean(0, T)
-        q = self._q.get_mean(0, T)
+        q = self._q.get_mean(0, T) # BS eq assumes no div
         vol_t = lambda t: self._implied_vol_surface.implied_vol(t, K)
         vol_k = lambda k: self._implied_vol_surface.implied_vol(T, k)
         C_t = lambda t: Pricer.BS_CALL(self._S0, K, t, r, vol_t(t))
-        C_k = lambda k: Pricer.BS_CALL(self._S0, K, T, r, vol_k(k))
+        C_k = lambda k: Pricer.BS_CALL(self._S0, k, T, r, vol_k(k))
         dCdT = self.__first_diff(C_t, T, 1 / 365.0)
         dCdK = self.__first_diff(C_k, K, 0.01 * K)
         d2CdK2 = self.second_diff(C_k, K, 0.01 * K)
