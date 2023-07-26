@@ -11,3 +11,4 @@ numpy
 pandas
 pytest
 scipy
+sympy

@@ -8,7 +8,7 @@ from ExoticEngine.MonteCarloEngine import SimulationModel as Sim
 from ExoticEngine.Payoff import Options as O
 from ExoticEngine.Payoff import PathDependentOptions as PDO
 from ExoticEngine.Statistics import RandomNumberGenerators as RNG
-from sandbox.ExoticEngineTests import pricer_helper as helper
+from sandbox.ExoticEngineTests.PricerTest import pricer_helper as helper
 
 
 def test_vanilla_put_pricer_zero_rate_zero_vol():
