@@ -23,7 +23,7 @@ class BSLocalVolatilitySurface(LocalVolatilitySurface):
     """
 
     def __init__(self, implied_vol_surface: VS.VolatilitySurfaceBlackScholes):
-        super.__init__(implied_vol_surface)
+        super().__init__(implied_vol_surface)
         self._r = implied_vol_surface.rate
         self._q = implied_vol_surface.repo_rate
         self._S0 = implied_vol_surface.spot
@@ -63,7 +63,7 @@ class BSLocalVolatilitySurface(LocalVolatilitySurface):
         )
         dvdT = self.__first_diff(var_t, T, 1 / 365.0)
         dvdy = self.__first_diff(var_y, log_moneyness(K), 0.01)  # dy = dK/K = 0.01
-        d2vdy2 = self.second_diff(var_y, log_moneyness(K), 0.01)
+        d2vdy2 = self.__second_diff(var_y, log_moneyness(K), 0.01)
         v = var_t(T)  # implied BS total variance
         y = log_moneyness(K)
         denominator = (
@@ -81,14 +81,14 @@ class BSLocalVolatilitySurface(LocalVolatilitySurface):
         add reference
         """
         r = self._r.get_mean(0, T)
-        q = self._q.get_mean(0, T) # BS eq assumes no div
+        q = self._q.get_mean(0, T)  # BS eq assumes no div
         vol_t = lambda t: self._implied_vol_surface.implied_vol(t, K)
         vol_k = lambda k: self._implied_vol_surface.implied_vol(T, k)
         C_t = lambda t: Pricer.BS_CALL(self._S0, K, t, r, vol_t(t))
         C_k = lambda k: Pricer.BS_CALL(self._S0, k, T, r, vol_k(k))
         dCdT = self.__first_diff(C_t, T, 1 / 365.0)
         dCdK = self.__first_diff(C_k, K, 0.01 * K)
-        d2CdK2 = self.second_diff(C_k, K, 0.01 * K)
+        d2CdK2 = self.__second_diff(C_k, K, 0.01 * K)
         numerator = dCdT + q * C_t(T) + (r - q) * K * dCdK
         denominator = 0.5 * K**2 * d2CdK2
         return np.sqrt(numerator / denominator)

@@ -14,11 +14,11 @@ from ExoticEngine.MarketDataObject.VolatilitySurfaces import \
 
 
 class VolatilitySurface(abc.ABC):
-    def __init__(self, option_quotes: pd.dataframe, interpolation_style):
+    def __init__(self, option_quotes: pd.DataFrame, interpolation_style):
         self._quotes = option_quotes
         self._strikes = option_quotes.columns.astype(float)
         self._maturities = option_quotes.index.astype(float)
-        self.__T, self.__K = np.meshgrid(self._maturities, self._strikes)
+        self.__K, self.__T = np.meshgrid(self._strikes, self._maturities)
         if interpolation_style == "bilinear":
             self._interpolator = VI.VolatilityInterpolationBilinear(
                 self._strikes, self._maturities, self._quotes
@@ -55,7 +55,7 @@ class VolatilitySurface(abc.ABC):
 class VolatilitySurfaceBlackScholes(VolatilitySurface):
     def __init__(
         self,
-        option_quotes: pd.dataframe,
+        option_quotes: pd.DataFrame,
         rate: P.Parameter,
         repo_rate: P.Parameter,
         spot: float,
@@ -65,14 +65,14 @@ class VolatilitySurfaceBlackScholes(VolatilitySurface):
         self._r = rate
         self._q = repo_rate
         self._S0 = spot
-        super.__init__(option_quotes, interpolation_style)
+        super().__init__(option_quotes, interpolation_style)
 
     def implied_vol(self, T, K):
         """
         if T,K in R, then return sigma(T,K) in R
         elif T,K are vectors, then return implied vol surface
         """
-        return self._interpolator(T, K)
+        return self._interpolator.interpolation_2d(T, K)
 
     @property
     def rate(self):
